@@ -9,10 +9,19 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-  kafka:
-    image: 'bitnami/kafka:latest'
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
-      - '9094:9094'
+      - "27017:27017"
+  kafka:
+    image: "bitnami/kafka:latest"
+    ports:
+      - "9094:9094"
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker

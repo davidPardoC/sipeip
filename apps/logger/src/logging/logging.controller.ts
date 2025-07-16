@@ -8,7 +8,7 @@ export class LoggingController {
   constructor(private readonly loggingService: LoggingService) {}
 
   @EventPattern('event-log-core')
-  handleMessage(@Payload() message: MessageLogEvent): void {
-    this.loggingService.logMessage(message);
+  handleMessage(@Payload() message: MessageLogEvent) {
+    return this.loggingService.logMessage(message);
   }
 }

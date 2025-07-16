@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import AppSidebarLayout from "./components/AppSidebar/AppSidebar";
 
 export default async function Layout({
   children,
@@ -12,5 +13,5 @@ export default async function Layout({
     redirect("/api/auth/signin");
   }
 
-  return children;
+  return <AppSidebarLayout>{children}</AppSidebarLayout>;
 }

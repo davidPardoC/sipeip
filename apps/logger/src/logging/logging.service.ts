@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Log } from './schema/log.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class LoggingService {
-  logMessage(message: any): void {
-    // Here you can implement your logging logic, e.g., save to a database or file
-    console.log('Received message:', message);
+  constructor(@InjectModel(Log.name) private readonly logModel: Model<Log>) {
+    // Initialization logic if needed
+  }
+
+  logMessage(event: any): Promise<Log> {
+    return this.logModel.create(event);
   }
 }

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const ProtectdPage = () => {
-  return (
-    <div>ProtectdPage</div>
-  )
-}
+const Page = () => {
+  return <div className="container">ProtectdPage</div>;
+};
 
-export default ProtectdPage
+export default Page;

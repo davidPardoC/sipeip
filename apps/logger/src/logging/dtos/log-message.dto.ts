@@ -1,8 +1,9 @@
 export class MessageLogEvent {
   event: string;
   timestamp: string;
-  prev?: Record<string, any>;
-  current?: Record<string, any>;
-  user?: string;
-  message: string;
+  before?: Record<string, any>;
+  after?: Record<string, any>;
+  userId?: number;
+  message?: string;
+  resourceId?: number;
 }
