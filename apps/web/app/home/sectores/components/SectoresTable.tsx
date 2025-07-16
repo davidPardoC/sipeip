@@ -78,7 +78,9 @@ const SectoresTable = async () => {
                     <TableCell>
                       {macroSector ? (
                         <div className="flex flex-col">
-                          <span className="font-medium">{macroSector.name}</span>
+                          <span className="font-medium">
+                            {macroSector.name}
+                          </span>
                           <span className="text-sm text-muted-foreground">
                             {macroSector.code}
                           </span>

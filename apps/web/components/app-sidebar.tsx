@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChevronDown, SquareMousePointer } from "lucide-react";
@@ -18,106 +18,117 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { ROLES } from "@/constants/role.constants";
+import { Session } from "next-auth";
 
-// Menu items.
-const items = [
-  {
-    title: "Inicio",
-    url: "/home",
-    icon: Home,
-  },
-  {
-    title: "Indicadores",
-    url: "/home/indicadores",
-    icon: Inbox,
-  },
-  {
-    title: "Planes",
-    url: "/home/planes",
-    icon: Calendar,
-  },
-  {
-    title: "Entidades",
-    url: "/home/entidades",
-    icon: Search,
-  },
-];
+function checkRoles(roles: string[], session: Session | null): boolean {
+  if (!roles || roles.length === 0) {
+    return true;
+  }
+  return !!session?.roles?.some((role: string) => roles.includes(role));
+}
 
-const sectorsMenu = [
-  {
-    title: "Macro Sectores",
-    url: "/home/sectores/macro",
-    icon: SquareMousePointer,
-  },
-  {
-    title: "Sectores",
-    url: "/home/sectores",
-    icon: SquareMousePointer,
-  },
-  {
-    title: "Micro Sectores",
-    url: "/home/sectores/micro",
-    icon: SquareMousePointer,
-  },
-];
+const MenuConfig = {
+  sections: [
+    {
+      allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+      title: "Application",
+      subSections: [
+        {
+          title: "Inicio",
+          url: "/home",
+          icon: Home,
+        },
+        {
+          title: "Indicadores",
+          url: "/home/indicadores",
+          icon: Inbox,
+        },
+        {
+          title: "Planes",
+          url: "/home/planes",
+          icon: Calendar,
+        },
+        {
+          title: "Entidades",
+          url: "/home/entidades",
+          icon: Search,
+        },
+      ],
+    },
+    {
+      allowedRoles: [ROLES.SYS_ADMIN],
+      title: "Sectores",
+      subSections: [
+        {
+          title: "Macro Sectores",
+          url: "/home/sectores/macro",
+          icon: SquareMousePointer,
+        },
+        {
+          title: "Sectores",
+          url: "/home/sectores",
+          icon: SquareMousePointer,
+        },
+        {
+          title: "Micro Sectores",
+          url: "/home/sectores/micro",
+          icon: SquareMousePointer,
+        },
+      ],
+    },
+  ],
+};
 
 export function AppSidebar() {
   const { data: session } = useSession();
+  console.log(session?.roles);
 
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <div className="flex items-center p-2">
-              <span className="text-xs">
-                Bienvenido{" "}
-                <span className="font-bold">{session?.user?.name}</span>
-              </span>
-            </div>
-          </SidebarGroupContent>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <Collapsible defaultOpen className="group/collapsible">
-          <SidebarGroup>
-            <SidebarGroupLabel asChild>
-              <CollapsibleTrigger>
-                Sectores
-                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {sectorsMenu.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <Link href={item.url}>
-                          <item.icon />
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+        <SidebarGroupContent>
+          <div className="flex items-center p-2">
+            <span className="text-xs">
+              Bienvenido{" "}
+              <span className="font-bold">{session?.user?.name}</span>
+            </span>
+          </div>
+        </SidebarGroupContent>
+        {MenuConfig.sections.map(({ title, subSections, allowedRoles }) => {
+          if (!checkRoles(allowedRoles, session)) {
+            return null; // Skip rendering this section if the user does not have the required roles
+          }
+
+          return (
+            <Collapsible key={title} defaultOpen className="group/collapsible">
+              <SidebarGroup>
+                <SidebarGroupLabel asChild>
+                  <CollapsibleTrigger>
+                    {title}
+                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {subSections.map((item) => (
+                        <SidebarMenuItem key={item.title}>
+                          <SidebarMenuButton asChild>
+                            <Link href={item.url}>
+                              <item.icon />
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </SidebarGroup>
+            </Collapsible>
+          );
+        })}
       </SidebarContent>
     </Sidebar>
   );

@@ -12,9 +12,10 @@ import {
   microSectorCreateSchema,
 } from "@/lib/validations/sectors.validators";
 import { revalidatePath } from "next/cache";
+import { ROLES } from "@/constants/role.constants";
 
 export const createMacroSector = async (data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -37,12 +38,12 @@ export const createMacroSector = async (data: FormData) => {
 };
 
 export const getMacroSectores = async () => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
   return macroSectorService.getAll();
 };
 
 export const updateMacroSector = async (id: number, data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -64,7 +65,7 @@ export const updateMacroSector = async (id: number, data: FormData) => {
 };
 
 export const deleteMacroSector = async (id: number) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   try {
     await macroSectorService.delete(id);
@@ -80,7 +81,7 @@ export const deleteMacroSector = async (id: number) => {
 };
 
 export const createSector = async (data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -108,7 +109,7 @@ export const createSector = async (data: FormData) => {
 };
 
 export const updateSector = async (id: number, data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -136,7 +137,7 @@ export const updateSector = async (id: number, data: FormData) => {
 };
 
 export const deleteSector = async (id: number) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   try {
     await sectorService.delete(id);
@@ -151,12 +152,12 @@ export const deleteSector = async (id: number) => {
 };
 
 export const getSectores = async () => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
   return sectorService.getAll();
 };
 
 export const createMicroSector = async (data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -185,7 +186,7 @@ export const createMicroSector = async (data: FormData) => {
 };
 
 export const updateMicroSector = async (id: number, data: FormData) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   const rawData = {
     name: data.get("name") as string,
@@ -214,7 +215,7 @@ export const updateMicroSector = async (id: number, data: FormData) => {
 };
 
 export const deleteMicroSector = async (id: number) => {
-  await checkAuth();
+  await checkAuth(ROLES.SYS_ADMIN);
 
   try {
     await microSectorService.delete(id);

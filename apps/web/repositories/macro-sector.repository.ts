@@ -1,7 +1,7 @@
 import { db } from "@/infraestructure/database/connection";
 import { macroSector } from "@/infraestructure/database/schemas";
 import { MacroSector } from "@/types/domain/macro-sector.entity";
-import { and, desc, eq, isNull, not } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 
 export class MacroSectorRepository {
   // Define methods for interacting with the sector data

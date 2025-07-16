@@ -3,6 +3,7 @@ import Keycloak from "next-auth/providers/keycloak";
 import { publishLogEvent } from "./infraestructure/kafka/kafka.publisher";
 import { LOG_EVENTS } from "./types/event.types";
 import jwt from "jsonwebtoken";
+import { TokenPayload } from "./types/domain/token.entity";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
@@ -21,7 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, account }) {
       let roles: string[] = [];
       if (account?.access_token) {
-        const decoded = jwt.decode(account.access_token) as Record<string, any>;
+        const decoded = jwt.decode(account.access_token) as TokenPayload;
         roles = decoded?.realm_access?.roles || [];
       } else {
         return token;
@@ -34,7 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         session.user.id = token.sub || "";
       }
-      return session;
+      return {...session, roles: token.roles || []};
     },
   },
 });
