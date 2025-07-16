@@ -1,4 +1,9 @@
-import { Calendar, Home, Inbox, Search } from "lucide-react";
+import {
+  Building2,
+  Calendar,
+  ChartSpline,
+  LayoutDashboard,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ChevronDown, SquareMousePointer } from "lucide-react";
@@ -32,17 +37,17 @@ const MenuConfig = {
   sections: [
     {
       allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
-      title: "Application",
+      title: "SIPEiP",
       subSections: [
         {
           title: "Inicio",
           url: "/home",
-          icon: Home,
+          icon: LayoutDashboard,
         },
         {
           title: "Indicadores",
           url: "/home/indicadores",
-          icon: Inbox,
+          icon: ChartSpline,
         },
         {
           title: "Planes",
@@ -52,7 +57,7 @@ const MenuConfig = {
         {
           title: "Entidades",
           url: "/home/entidades",
-          icon: Search,
+          icon: Building2,
         },
       ],
     },
