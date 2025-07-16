@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import { macroSector, microSector, sector } from "./schemas/index";
+import { macroSector, microSector, sector, publicEntity } from "./schemas/index";
 
 const db = drizzle({
   connection: {
@@ -10,6 +10,7 @@ const db = drizzle({
     macroSector,
     microSector,
     sector,
+    publicEntity,
   },
 });
 

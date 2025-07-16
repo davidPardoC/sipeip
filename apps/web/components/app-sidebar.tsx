@@ -54,11 +54,6 @@ const MenuConfig = {
           url: "/home/planes",
           icon: Calendar,
         },
-        {
-          title: "Entidades",
-          url: "/home/entidades",
-          icon: Building2,
-        },
       ],
     },
     {
@@ -79,6 +74,11 @@ const MenuConfig = {
           title: "Micro Sectores",
           url: "/home/sectores/micro",
           icon: SquareMousePointer,
+        },
+        {
+          title: "Entidades",
+          url: "/home/entidades",
+          icon: Building2,
         },
       ],
     },
