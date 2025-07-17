@@ -62,7 +62,7 @@ const DeleteMicroSectorDialog = ({ microSector }: DeleteMicroSectorDialogProps) 
           <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta acción no se puede deshacer. Esto eliminará permanentemente el micro sector{" "}
-            <strong>"{microSector.name}"</strong> (código: {microSector.code}) del sistema.
+            <strong>&quot;{microSector.name}&quot;</strong> (código: {microSector.code}) del sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

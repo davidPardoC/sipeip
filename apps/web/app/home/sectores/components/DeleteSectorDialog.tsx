@@ -62,7 +62,7 @@ const DeleteSectorDialog = ({ sector }: DeleteSectorDialogProps) => {
           <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta acción no se puede deshacer. Esto eliminará permanentemente el sector{" "}
-            <strong>"{sector.name}"</strong> (código: {sector.code}) del sistema.
+            <strong>&quot;{sector.name}&quot;</strong> (código: {sector.code}) del sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

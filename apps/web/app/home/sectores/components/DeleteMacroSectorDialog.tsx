@@ -62,7 +62,7 @@ const DeleteMacroSectorDialog = ({ macroSector }: DeleteMacroSectorDialogProps) 
           <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta acción no se puede deshacer. Esto eliminará permanentemente el macro sector{" "}
-            <strong>"{macroSector.name}"</strong> (código: {macroSector.code}) del sistema.
+            <strong>&quot;{macroSector.name}&quot;</strong> (código: {macroSector.code}) del sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
