@@ -54,6 +54,21 @@ const MenuConfig = {
           url: "/home/planes",
           icon: Calendar,
         },
+        {
+          title: "Proyectos",
+          url: "/home/proyectos",
+          icon: SquareMousePointer,
+        },
+        {
+          title: "Programas",
+          url: "/home/programas",
+          icon: SquareMousePointer,
+        },
+        {
+          title: "Objetivos",
+          url: "/home/objetivos",
+          icon: SquareMousePointer,
+        },
       ],
     },
     {
@@ -80,6 +95,11 @@ const MenuConfig = {
           url: "/home/entidades",
           icon: Building2,
         },
+        {
+          title: "Reportes",
+          url: "/home/reports",
+          icon: Building2,
+        }
       ],
     },
   ],
