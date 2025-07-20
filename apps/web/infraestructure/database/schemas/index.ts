@@ -1,4 +1,16 @@
 export { macroSector } from "./macro-sector";
 export { sector } from "./sector";
 export { microSector } from "./micro-sector";
+export { indicator } from "./indicator";
+export { StatusEnum } from "./status-enum";
+export { institutionalPlan } from "./institutional-plan";
+export { objectiveAlignment } from "./objective-alignment";
+export { odsGoal } from "./ods-goal";
+export { organizationalUnit } from "./organizational-unit";
+export { pndObjective } from "./pnd-objective";
+export { program } from "./program";
+export { project } from "./project";
 export { publicEntity } from "./public-entity";
+export { strategicObjective } from "./strategic-objectives";
+export { typology } from "./typology";
+export { goal } from "./goal";

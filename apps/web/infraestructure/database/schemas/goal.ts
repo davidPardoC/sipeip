@@ -1,13 +1,12 @@
 import * as t from "drizzle-orm/pg-core";
-import { microSector } from "./micro-sector";
 import { StatusEnum } from "./status-enum";
+import { indicator } from "./indicator";
 
-export const publicEntity = t.pgTable("public_entity", {
+export const goal = t.pgTable("goal", {
   id: t.serial("id").primaryKey(),
-  code: t.text("code").notNull(),
-  name: t.text("name").notNull(),
-  shortName: t.text("short_name").notNull(),
-  govermentLevel: t.text("goverment_level").notNull(),
+  year: t.integer("year").notNull(),
+  targetValue: t.decimal("target_value", { precision: 10, scale: 2 }).notNull(),
+  actualValue: t.decimal("actual_value", { precision: 10, scale: 2 }),
   status: StatusEnum(),
   // Audit fields
   createdBy: t.text("created_by"),
@@ -16,8 +15,8 @@ export const publicEntity = t.pgTable("public_entity", {
   updatedAt: t.timestamp("updated_at", { mode: "string" }).defaultNow(),
   deletedAt: t.timestamp("deleted_at", { mode: "string" }),
   // Relations
-  subSectorId: t
-    .integer("sub_sector_id")
+  indicatorId: t
+    .integer("indicator_id")
     .notNull()
-    .references(() => microSector.id),
+    .references(() => indicator.id, { onDelete: "cascade" }),
 });

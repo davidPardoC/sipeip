@@ -39,38 +39,49 @@ function checkRoles(roles: string[], session: Session | null): boolean {
 const MenuConfig = {
   sections: [
     {
-      allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
       title: "SIPEiP",
       subSections: [
         {
           title: "Inicio",
           url: "/home",
-          icon: LayoutDashboard,
+          icon: <LayoutDashboard />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Indicadores",
           url: "/home/indicadores",
-          icon: ChartSpline,
+          icon: <ChartSpline />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Planes",
           url: "/home/planes",
-          icon: Calendar,
+          icon: <Calendar />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Proyectos",
           url: "/home/proyectos",
-          icon: FolderKanban,
+          icon: <FolderKanban />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Programas",
           url: "/home/programas",
-          icon: Notebook,
+          icon: <Notebook />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Objetivos",
           url: "/home/objetivos",
-          icon: Goal,
+          icon: <Goal />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+        },
+        {
+          title: "Reportes",
+          url: "/home/reports",
+          icon: <Building2 />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
       ],
     },
@@ -81,28 +92,33 @@ const MenuConfig = {
         {
           title: "Macro Sectores",
           url: "/home/sectores/macro",
-          icon: SquareMousePointer,
+          icon: <SquareMousePointer />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Sectores",
           url: "/home/sectores",
-          icon: SquareMousePointer,
+          icon: <SquareMousePointer />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Micro Sectores",
           url: "/home/sectores/micro",
-          icon: SquareMousePointer,
+          icon: <SquareMousePointer />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+        },
+        {
+          title: "Unidades Organizacionales",
+          url: "/home/unidades",
+          icon: <Building2 />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
           title: "Entidades",
           url: "/home/entidades",
-          icon: Building2,
+          icon: <Building2 />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
-        {
-          title: "Reportes",
-          url: "/home/reports",
-          icon: Building2,
-        }
       ],
     },
   ],
@@ -123,11 +139,7 @@ export function AppSidebar() {
             </span>
           </div>
         </SidebarGroupContent>
-        {MenuConfig.sections.map(({ title, subSections, allowedRoles }) => {
-          if (!checkRoles(allowedRoles, session)) {
-            return null; // Skip rendering this section if the user does not have the required roles
-          }
-
+        {MenuConfig.sections.map(({ title, subSections }) => {
           return (
             <Collapsible key={title} defaultOpen className="group/collapsible">
               <SidebarGroup>
@@ -140,16 +152,21 @@ export function AppSidebar() {
                 <CollapsibleContent>
                   <SidebarGroupContent>
                     <SidebarMenu>
-                      {subSections.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton asChild>
-                            <Link href={item.url}>
-                              <item.icon />
-                              <span>{item.title}</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
+                      {subSections.map(({ title, url, allowedRoles, icon }) => {
+                        if (!checkRoles(allowedRoles, session)) {
+                          return null; // Skip rendering this section if the user does not have the required roles
+                        }
+                        return (
+                          <SidebarMenuItem key={title}>
+                            <SidebarMenuButton asChild>
+                              <Link href={url}>
+                                {icon}
+                                <span>{title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </CollapsibleContent>
