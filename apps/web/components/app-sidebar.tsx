@@ -2,7 +2,10 @@ import {
   Building2,
   Calendar,
   ChartSpline,
+  FolderKanban,
+  Goal,
   LayoutDashboard,
+  Notebook,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -57,17 +60,17 @@ const MenuConfig = {
         {
           title: "Proyectos",
           url: "/home/proyectos",
-          icon: SquareMousePointer,
+          icon: FolderKanban,
         },
         {
           title: "Programas",
           url: "/home/programas",
-          icon: SquareMousePointer,
+          icon: Notebook,
         },
         {
           title: "Objetivos",
           url: "/home/objetivos",
-          icon: SquareMousePointer,
+          icon: Goal,
         },
       ],
     },
