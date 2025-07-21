@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
+import * as dotenv from "dotenv";
 import {
   macroSector,
   microSector,
@@ -16,11 +17,13 @@ import {
   project,
   strategicObjective,
   typology,
-} from "./schemas/index";
+} from "./schemas/index.ts";
+
+dotenv.config();
 
 const db = drizzle({
   connection: {
-    url: process.env.AUTH_DRIZZLE_URL,
+    url: process.env.DATABASE_URL,
     ssl: false,
   },
   schema: {

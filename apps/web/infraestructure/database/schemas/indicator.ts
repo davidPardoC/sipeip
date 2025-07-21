@@ -1,5 +1,5 @@
 import * as t from "drizzle-orm/pg-core";
-import { StatusEnum } from "./status-enum";
+import { StatusEnum } from "./status-enum.ts";
 
 export const indicator = t.pgTable("indicator", {
   id: t.serial("id").primaryKey(),

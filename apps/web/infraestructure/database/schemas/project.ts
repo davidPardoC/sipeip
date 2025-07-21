@@ -1,7 +1,7 @@
 import * as t from "drizzle-orm/pg-core";
-import { program } from "./program";
-import { StatusEnum } from "./status-enum";
-import { typology } from "./typology";
+import { program } from "./program.ts";
+import { StatusEnum } from "./status-enum.ts";
+import { typology } from "./typology.ts";
 
 export const project = t.pgTable("project", {
   id: t.serial("id").primaryKey(),

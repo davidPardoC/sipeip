@@ -1,7 +1,7 @@
 import * as t from "drizzle-orm/pg-core";
-import { strategicObjective } from "./strategic-objectives";
-import { pndObjective } from "./pnd-objective";
-import { odsGoal } from "./ods-goal";
+import { strategicObjective } from "./strategic-objectives.ts";
+import { pndObjective } from "./pnd-objective.ts";
+import { odsGoal } from "./ods-goal.ts";
 
 export const objectiveAlignment = t.pgTable("objective_alignment", {
   id: t.serial("id").primaryKey(),

@@ -1,6 +1,6 @@
 import * as t from "drizzle-orm/pg-core";
-import { institutionalPlan } from "./institutional-plan";
-import { StatusEnum } from "./status-enum";
+import { institutionalPlan } from "./institutional-plan.ts";
+import { StatusEnum } from "./status-enum.ts";
 
 export const strategicObjective = t.pgTable("strategic_objective", {
   id: t.serial("id").primaryKey(),

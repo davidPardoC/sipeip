@@ -1,10 +1,10 @@
 import * as t from "drizzle-orm/pg-core";
-import { sector } from "./sector";
+import { sector } from "./sector.ts";
 
 export const microSector = t.pgTable("micro_sector", {
   id: t.serial("id").primaryKey(),
   name: t.text("name").notNull(),
-  code: t.text("code").notNull(),
+  code: t.text("code").notNull().unique(),
   // Audit fields
   createdBy: t.text("created_by"),
   updatedBy: t.text("updated_by"),

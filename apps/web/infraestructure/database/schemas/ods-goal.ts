@@ -2,7 +2,7 @@ import * as t from "drizzle-orm/pg-core";
 
 export const odsGoal = t.pgTable("ods_goal", {
     id: t.serial("id").primaryKey(),
-    code: t.text("code").notNull(),
+    code: t.text("code").notNull().unique(),
     name: t.text("name").notNull(),
     description: t.text("description").notNull(),
     // Audit fields

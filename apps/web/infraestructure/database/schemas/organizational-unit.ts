@@ -1,6 +1,6 @@
 import * as t from "drizzle-orm/pg-core";
-import { publicEntity } from "./public-entity";
-import { StatusEnum } from "./status-enum";
+import { publicEntity } from "./public-entity.ts";
+import { StatusEnum } from "./status-enum.ts";
 
 export const organizationalUnit = t.pgTable("organizational_unit", {
   id: t.serial("id").primaryKey(),
