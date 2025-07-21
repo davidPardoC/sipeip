@@ -67,7 +67,7 @@ const MenuConfig = {
         },
         {
           title: "Programas",
-          url: "/home/programas",
+          url: "/home/program",
           icon: <Notebook />,
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
@@ -102,15 +102,9 @@ const MenuConfig = {
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
-          title: "Micro Sectores",
+          title: "Sub Sectores",
           url: "/home/sectores/micro",
           icon: <SquareMousePointer />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
-        },
-        {
-          title: "Unidades Organizacionales",
-          url: "/home/unidades",
-          icon: <Building2 />,
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {

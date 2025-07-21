@@ -49,9 +49,9 @@ const MicroSectoresTable = async () => {
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Micro Sectores</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Sub Sectores</h1>
           <p className="text-muted-foreground">
-            Gestiona los micro sectores del sistema
+            Gestiona los sub sectores del sistema
           </p>
         </div>
         <MicroSectorForm />

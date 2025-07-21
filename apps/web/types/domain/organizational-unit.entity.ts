@@ -1,11 +1,11 @@
-export class PublicEntity {
+export class OrganizationalUnit {
   id: number;
   code: string;
   name: string;
-  shortName: string;
-  govermentLevel: string;
+  level: number;
   status: "ACTIVE" | "INACTIVE" | "ARCHIVED" | null;
-  subSectorId: number;
+  parentId: number;
+  publicEntityId: number;
   createdBy?: string | null;
   updatedBy?: string | null;
   createdAt: string | null;
@@ -16,10 +16,10 @@ export class PublicEntity {
     id: number,
     code: string,
     name: string,
-    shortName: string,
-    govermentLevel: string,
+    level: number,
     status: "ACTIVE" | "INACTIVE" | "ARCHIVED" | null,
-    subSectorId: number,
+    parentId: number,
+    publicEntityId: number,
     createdAt: string | null,
     updatedAt: string | null,
     createdBy?: string | null,
@@ -29,10 +29,10 @@ export class PublicEntity {
     this.id = id;
     this.code = code;
     this.name = name;
-    this.shortName = shortName;
-    this.govermentLevel = govermentLevel;
+    this.level = level;
     this.status = status;
-    this.subSectorId = subSectorId;
+    this.parentId = parentId;
+    this.publicEntityId = publicEntityId;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.createdBy = createdBy;

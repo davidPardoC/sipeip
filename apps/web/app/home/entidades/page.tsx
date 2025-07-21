@@ -1,7 +1,12 @@
 import React from "react";
+import PublicEntitiesTable from "./components/PublicEntitiesTable";
+import { checkServerAuth } from "@/lib/auth.utils";
+import { ROLES } from "@/constants/role.constants";
 
-const Entidates = () => {
-  return <div>Entidates</div>;
+const EntidadesPage = async () => {
+  await checkServerAuth(ROLES.SYS_ADMIN);
+  
+  return <PublicEntitiesTable />;
 };
 
-export default Entidates;
+export default EntidadesPage;
