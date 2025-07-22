@@ -2,12 +2,11 @@ import {
   Building2,
   Calendar,
   ChartSpline,
-  FolderKanban,
-  Goal,
   LayoutDashboard,
   Notebook,
+  LogOut,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { ChevronDown, SquareMousePointer } from "lucide-react";
 
@@ -40,6 +39,7 @@ const MenuConfig = {
   sections: [
     {
       title: "SIPEiP",
+      allowedRoles: [],
       subSections: [
         {
           title: "Inicio",
@@ -57,13 +57,11 @@ const MenuConfig = {
           title: "Planes",
           url: "/home/planes",
           icon: <Calendar />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
-        },
-        {
-          title: "Proyectos",
-          url: "/home/proyectos",
-          icon: <FolderKanban />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [
+            ROLES.SYS_ADMIN,
+            ROLES.PLANIFICATION_TECHNICIAN,
+            ROLES.INSTITUTIONAL_REVIEWER,
+          ],
         },
         {
           title: "Programas",
@@ -71,12 +69,7 @@ const MenuConfig = {
           icon: <Notebook />,
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
-        {
-          title: "Objetivos",
-          url: "/home/objetivos",
-          icon: <Goal />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
-        },
+
         {
           title: "Reportes",
           url: "/home/reports",
@@ -93,25 +86,25 @@ const MenuConfig = {
           title: "Macro Sectores",
           url: "/home/sectores/macro",
           icon: <SquareMousePointer />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [ROLES.SYS_ADMIN],
         },
         {
           title: "Sectores",
           url: "/home/sectores",
           icon: <SquareMousePointer />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [ROLES.SYS_ADMIN],
         },
         {
           title: "Sub Sectores",
           url: "/home/sectores/micro",
           icon: <SquareMousePointer />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [ROLES.SYS_ADMIN],
         },
         {
           title: "Entidades",
           url: "/home/entidades",
           icon: <Building2 />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [ROLES.SYS_ADMIN],
         },
       ],
     },
@@ -120,7 +113,10 @@ const MenuConfig = {
 
 export function AppSidebar() {
   const { data: session } = useSession();
-  console.log(session?.roles);
+
+  const handleLogout = async () => {
+    await signOut({ redirect: true });
+  };
 
   return (
     <Sidebar>
@@ -133,7 +129,11 @@ export function AppSidebar() {
             </span>
           </div>
         </SidebarGroupContent>
-        {MenuConfig.sections.map(({ title, subSections }) => {
+        {MenuConfig.sections.map(({ title, subSections, allowedRoles }) => {
+          if (!checkRoles(allowedRoles, session)) {
+            return null; // Skip rendering this section if the user does not have the required roles
+          }
+
           return (
             <Collapsible key={title} defaultOpen className="group/collapsible">
               <SidebarGroup>
@@ -168,6 +168,23 @@ export function AppSidebar() {
             </Collapsible>
           );
         })}
+
+        {/* Logout Button */}
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={handleLogout}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <LogOut />
+                  <span>Cerrar Sesión</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );

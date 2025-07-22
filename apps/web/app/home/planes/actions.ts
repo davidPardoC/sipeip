@@ -3,10 +3,13 @@
 import { institutionalPlanService, publicEntityService } from "@/services";
 import { InstitutionalPlanCreateInput, InstitutionalPlanUpdateInput } from "@/lib/validations/institutional-plan.validators";
 import { revalidatePath } from "next/cache";
-import { InstitutionalPlanWithEntity } from "@/types/domain/institutional-plan.entity";
+import { checkAuth } from "@/lib/auth.utils";
 
-export async function getInstitutionalPlans() {
+export async function getInstitutionalPlans(userCreatedId?: string) {
   try {
+    if (userCreatedId) {
+      return await institutionalPlanService.getByUserId(userCreatedId);
+    }
     return await institutionalPlanService.getAll();
   } catch (error) {
     console.error("Error fetching institutional plans:", error);
@@ -43,7 +46,8 @@ export async function getPublicEntitiesForPlans() {
 
 export async function createInstitutionalPlan(data: InstitutionalPlanCreateInput) {
   try {
-    const result = await institutionalPlanService.create(data);
+    const session = await checkAuth();
+    const result = await institutionalPlanService.create(data, session.user?.id);
     revalidatePath("/home/planes");
     return { success: true, data: result[0] };
   } catch (error) {

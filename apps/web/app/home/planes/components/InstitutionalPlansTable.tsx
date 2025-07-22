@@ -11,14 +11,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Target } from "lucide-react";
 import Link from "next/link";
-// import InstitutionalPlanForm from "./InstitutionalPlanForm";
-// import DeleteInstitutionalPlanDialog from "./DeleteInstitutionalPlanDialog";
 import { getInstitutionalPlans } from "../actions";
 import InstitutionalPlanForm from "./InstitutionalPlanForm";
+import { Session } from "next-auth";
 
-const InstitutionalPlansTable = async () => {
-  // Obtener los planes institucionales usando la server action
-  const institutionalPlans = await getInstitutionalPlans();
+type Props = {
+  session: Session | null;
+};
+
+const InstitutionalPlansTable = async ({ session }: Props) => {
+  const institutionalPlans = await getInstitutionalPlans(session?.user?.id);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";

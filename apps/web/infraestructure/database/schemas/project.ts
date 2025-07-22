@@ -1,6 +1,7 @@
 import * as t from "drizzle-orm/pg-core";
 import { program } from "./program.ts";
-import { StatusEnum } from "./status-enum.ts";
+import { strategicObjective } from "./strategic-objectives.ts";
+import { ProjectStatusEnum } from "./status-enum.ts";
 import { typology } from "./typology.ts";
 
 export const project = t.pgTable("project", {
@@ -10,7 +11,7 @@ export const project = t.pgTable("project", {
   budget: t.decimal("budget", { precision: 10, scale: 2 }).notNull(),
   startDate: t.date("start_date").notNull(),
   endDate: t.date("end_date").notNull(),
-  status: StatusEnum(),
+  status: ProjectStatusEnum(),
   // Audit fields
   createdBy: t.text("created_by"),
   updatedBy: t.text("updated_by"),
@@ -26,7 +27,7 @@ export const project = t.pgTable("project", {
   strategicObjectiveId: t
     .integer("strategic_objective_id")
     .notNull()
-    .references(() => program.id, { onDelete: "cascade" }),
+    .references(() => strategicObjective.id, { onDelete: "cascade" }),
   typologyId: t
     .integer("typology_id")
     .notNull()

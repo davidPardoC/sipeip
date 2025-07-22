@@ -14,3 +14,4 @@ export { publicEntity } from "./public-entity.ts";
 export { strategicObjective } from "./strategic-objectives.ts";
 export { typology } from "./typology.ts";
 export { goal } from "./goal.ts";
+export { attachment } from "./attachments.ts";

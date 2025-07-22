@@ -4,14 +4,22 @@ import { publishLogEvent } from "./infraestructure/kafka/kafka.publisher";
 import { LOG_EVENTS } from "./types/event.types";
 import jwt from "jsonwebtoken";
 import { TokenPayload } from "./types/domain/token.entity";
+import { db } from "./infraestructure/database/connection";
+import { usersMapping } from "./infraestructure/database/schemas/users_mapping";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
     signIn: async (message) => {
-      publishLogEvent({
-        event: LOG_EVENTS.AUTH.SIGN_IN,
-        userId: message.user.id,
-      });
+      Promise.all([
+        db.insert(usersMapping).values({
+          keycloakId: message.user.id as string,
+          userName: message.user.name as string,
+        }),
+        publishLogEvent({
+          event: LOG_EVENTS.AUTH.SIGN_IN,
+          userId: message.user.id,
+        }),
+      ]);
     },
   },
   providers: [Keycloak({})],
@@ -35,7 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token) {
         session.user.id = token.sub || "";
       }
-      return {...session, roles: token.roles || []};
+      return { ...session, roles: token.roles || [] };
     },
   },
 });

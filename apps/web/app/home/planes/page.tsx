@@ -4,9 +4,11 @@ import { checkServerAuth } from "@/lib/auth.utils";
 import { ROLES } from "@/constants/role.constants";
 
 const PlanesPage = async () => {
-  await checkServerAuth(ROLES.SYS_ADMIN);
-  
-  return <InstitutionalPlansTable />;
+  const session = await checkServerAuth(
+    ROLES.SYS_ADMIN,
+    ROLES.PLANIFICATION_TECHNICIAN
+  );
+  return <InstitutionalPlansTable session={session} />;
 };
 
 export default PlanesPage;

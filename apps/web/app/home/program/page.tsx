@@ -11,6 +11,8 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Program } from '@/types/domain/program.entity';
+import Link from 'next/link';
+import { FolderOpen } from 'lucide-react';
 
 const ProgramPage = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -156,6 +158,15 @@ const ProgramPage = () => {
                     </span>
                   </div>
                   <div className="flex gap-2">
+                    <Link href={`/home/projects?programId=${program.id}`}>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                      >
+                        <FolderOpen className="h-4 w-4 mr-2" />
+                        Projects
+                      </Button>
+                    </Link>
                     <Button 
                       variant="outline" 
                       size="sm"

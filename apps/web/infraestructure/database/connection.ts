@@ -17,7 +17,9 @@ import {
   project,
   strategicObjective,
   typology,
+  attachment,
 } from "./schemas/index.ts";
+import { usersMapping } from "./schemas/users_mapping.ts";
 
 dotenv.config();
 
@@ -43,6 +45,8 @@ const db = drizzle({
     project,
     strategicObjective,
     typology,
+    attachment,
+    usersMapping
   },
 });
 

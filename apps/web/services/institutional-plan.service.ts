@@ -11,11 +11,12 @@ export class InstitutionalPlanService extends BaseService {
     super();
   }
 
-  async create(institutionalPlan: Partial<InstitutionalPlan>): Promise<InstitutionalPlan[]> {
+  async create(institutionalPlan: Partial<InstitutionalPlan>, createdBy?: string): Promise<InstitutionalPlan[]> {
     const newPlan = await this.institutionalPlanRepository.create({
       ...institutionalPlan,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      createdBy,
     });
 
     publishLogEvent({
@@ -39,6 +40,10 @@ export class InstitutionalPlanService extends BaseService {
 
   getById(id: number): Promise<InstitutionalPlanWithEntity | undefined> {
     return this.institutionalPlanRepository.getById(id);
+  }
+
+  async getByUserId(userId: string): Promise<InstitutionalPlanWithEntity[]> {
+    return this.institutionalPlanRepository.getByUserId(userId);
   }
 
   getByPublicEntity(publicEntityId: number): Promise<InstitutionalPlanWithEntity[]> {

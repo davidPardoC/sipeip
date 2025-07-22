@@ -45,4 +45,14 @@ export const LOG_EVENTS = {
     UPDATE: "program_update",
     DELETE: "program_delete",
   },
+  PROJECTS: {
+    CREATE: "project_create",
+    UPDATE: "project_update",
+    DELETE: "project_delete",
+  },
+  TYPOLOGIES: {
+    CREATE: "typology_create",
+    UPDATE: "typology_update",
+    DELETE: "typology_delete",
+  },
 };

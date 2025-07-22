@@ -5,3 +5,15 @@ export const StatusEnum = t.pgEnum("status", [
   "INACTIVE",
   "ARCHIVED",
 ]);
+
+export const ProjectStatusEnum = t.pgEnum("project_status", [
+  "ACTIVE",
+  "SEND_FOR_APPROVAL",
+  "INACTIVE",
+  "COMPLETED",
+  "CANCELLED",
+  "ON_HOLD",
+  "REJECTED",
+  "APPROVED",
+  "REQUEST_CHANGES"
+]);

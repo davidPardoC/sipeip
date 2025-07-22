@@ -25,9 +25,11 @@ export function checkRoles(roles: string[], session: Session): boolean {
 
 export async function checkServerAuth(...roles: string[]) {
   try {
-    await checkAuth(...roles);
+    const session = await checkAuth(...roles);
+    return session;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     redirect("/unauthorized");
+    // This line will never be reached, but is needed to satisfy TypeScript
   }
 }
