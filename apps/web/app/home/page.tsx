@@ -1,7 +1,12 @@
 import React from "react";
+import ComingSoon from "@/components/coming-soon";
 
-const Page = () => {
-  return <div className="container">ProtectdPage</div>;
+const Page = async () => {
+  return (
+    <div className="container">
+      <ComingSoon />
+    </div>
+  );
 };
 
 export default Page;

@@ -18,7 +18,7 @@ export class ProgramRepository {
         updatedAt: new Date().toISOString(),
       })
       .returning();
-    
+
     return result as Program[];
   }
 
@@ -27,7 +27,7 @@ export class ProgramRepository {
       .select()
       .from(program)
       .where(isNull(program.deletedAt));
-    
+
     return result as Program[];
   }
 
@@ -36,14 +36,14 @@ export class ProgramRepository {
       .select()
       .from(program)
       .where(and(eq(program.id, id), isNull(program.deletedAt)));
-    
+
     return result[0] as Program | undefined;
   }
 
   async update(id: number, data: Partial<Program>): Promise<Program[]> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: _, ...updateData } = data;
-    
+
     const result = await db
       .update(program)
       .set({
@@ -52,7 +52,7 @@ export class ProgramRepository {
       })
       .where(and(eq(program.id, id), isNull(program.deletedAt)))
       .returning();
-    
+
     return result as Program[];
   }
 
@@ -66,5 +66,14 @@ export class ProgramRepository {
       .returning();
 
     return result.length > 0;
+  }
+
+  async getByCreatedBy(createdBy: string): Promise<Program[]> {
+    const result = await db
+      .select()
+      .from(program)
+      .where(and(eq(program.createdBy, createdBy), isNull(program.deletedAt)));
+
+    return result as Program[];
   }
 }

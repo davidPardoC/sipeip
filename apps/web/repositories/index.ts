@@ -14,6 +14,7 @@ import { ObjectiveAlignmentRepository } from "./objective-alignment.repository";
 import { IndicatorRepository } from "./indicator.repository";
 import { GoalRepository } from "./goal.repository";
 import { projectObservationRepository } from "./project-observation.repository";
+import { ActivityRepository } from "./activity.repository";
 
 const macroSectorRepo = new MacroSectorRepository();
 const sectorRepo = new SectorRepository();
@@ -30,6 +31,7 @@ const pndObjectiveRepo = new PndObjectiveRepository();
 const objectiveAlignmentRepo = new ObjectiveAlignmentRepository();
 const indicatorRepo = new IndicatorRepository();
 const goalRepo = new GoalRepository();
+const activityRepo = new ActivityRepository();
 
 export {
   macroSectorRepo,
@@ -47,7 +49,8 @@ export {
   objectiveAlignmentRepo,
   indicatorRepo,
   goalRepo,
-  projectObservationRepository
+  projectObservationRepository,
+  activityRepo
 };export type {
   MacroSectorRepository,
   SectorRepository,
@@ -64,4 +67,5 @@ export {
   ObjectiveAlignmentRepository,
   IndicatorRepository,
   GoalRepository,
+  ActivityRepository,
 };

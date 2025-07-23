@@ -11,7 +11,7 @@ export async function getInstitutionalPlans(userCreatedId?: string) {
 
   const session = await checkAuth();
 
-  const hasRole = checkRoles([ROLES.INSTITUTIONAL_REVIEWER], session)
+  const hasRole = checkRoles([ROLES.INSTITUTIONAL_REVIEWER, ROLES.SYS_ADMIN], session)
 
   try {
     if (userCreatedId && !hasRole) {

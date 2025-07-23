@@ -13,6 +13,7 @@ import {
   pndObjectiveRepo,
   indicatorRepo,
   goalRepo,
+  activityRepo,
 } from "@/repositories";
 import { MacroSectorService } from "./macro-sector.service";
 import { MicroSectorService } from "./micro-sector.service";
@@ -30,6 +31,7 @@ import { ObjectiveAlignmentService } from "./objective-alignment.service";
 import { IndicatorService } from "./indicator.service";
 import { GoalService } from "./goal.service";
 import { projectObservationService } from "./project-observation.service";
+import { ActivityService } from "./activity.service";
 
 const sectorService = new SectorService(sectorRepo);
 const macroSectorService = new MacroSectorService(macroSectorRepo);
@@ -46,6 +48,7 @@ const pndObjectiveService = new PndObjectiveService(pndObjectiveRepo);
 const objectiveAlignmentService = new ObjectiveAlignmentService();
 const indicatorService = new IndicatorService(indicatorRepo);
 const goalService = new GoalService(goalRepo);
+const activityService = new ActivityService(activityRepo);
 
 export {
   sectorService,
@@ -64,4 +67,5 @@ export {
   indicatorService,
   goalService,
   projectObservationService,
+  activityService,
 };

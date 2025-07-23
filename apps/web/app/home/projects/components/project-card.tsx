@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Paperclip, MessageSquare, Loader2 } from "lucide-react";
+import { Paperclip, MessageSquare, Loader2, Activity } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -37,6 +38,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   isUpdatingStatus = false,
   session,
 }) => {
+  const router = useRouter();
+
+  const handleNavigateToActivities = () => {
+    router.push(`/home/projects/${project.id}/activities`);
+  };
   return (
     <div className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
@@ -158,6 +164,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         <div className="flex flex-col gap-2 ml-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNavigateToActivities}
+            title="Ver Actividades"
+            className="w-full"
+          >
+            <Activity className="h-4 w-4 mr-2" />
+            Actividades
+          </Button>
           <Button
             variant="outline"
             size="sm"

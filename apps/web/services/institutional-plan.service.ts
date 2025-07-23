@@ -1,27 +1,29 @@
-import { publishLogEvent } from "@/infraestructure/kafka/kafka.publisher";
 import { InstitutionalPlanRepository } from "@/repositories/institutional-plan.repository";
-import { InstitutionalPlan, InstitutionalPlanWithEntity } from "@/types/domain/institutional-plan.entity";
+import {
+  InstitutionalPlan,
+  InstitutionalPlanWithEntity,
+} from "@/types/domain/institutional-plan.entity";
 import { LOG_EVENTS } from "@/types/event.types";
 import { BaseService } from "./base.service";
 
 export class InstitutionalPlanService extends BaseService {
   private logEvents = LOG_EVENTS.INSTITUTIONAL_PLANS;
 
-  constructor(private readonly institutionalPlanRepository: InstitutionalPlanRepository) {
+  constructor(
+    private readonly institutionalPlanRepository: InstitutionalPlanRepository
+  ) {
     super();
   }
 
-  async create(institutionalPlan: Partial<InstitutionalPlan>, createdBy?: string): Promise<InstitutionalPlan[]> {
+  async create(
+    institutionalPlan: Partial<InstitutionalPlan>,
+    createdBy?: string
+  ): Promise<InstitutionalPlan[]> {
     const newPlan = await this.institutionalPlanRepository.create({
       ...institutionalPlan,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy,
-    });
-
-    publishLogEvent({
-      event: this.logEvents.CREATE,
-      resourceId: newPlan[0].id,
     });
 
     this.emitLogEvent({
@@ -46,11 +48,16 @@ export class InstitutionalPlanService extends BaseService {
     return this.institutionalPlanRepository.getByUserId(userId);
   }
 
-  getByPublicEntity(publicEntityId: number): Promise<InstitutionalPlanWithEntity[]> {
+  getByPublicEntity(
+    publicEntityId: number
+  ): Promise<InstitutionalPlanWithEntity[]> {
     return this.institutionalPlanRepository.getByPublicEntity(publicEntityId);
   }
 
-  async update(id: number, data: Partial<InstitutionalPlan>): Promise<InstitutionalPlan[]> {
+  async update(
+    id: number,
+    data: Partial<InstitutionalPlan>
+  ): Promise<InstitutionalPlan[]> {
     const previousPlan = await this.institutionalPlanRepository.getById(id);
 
     if (!previousPlan) {
@@ -58,13 +65,6 @@ export class InstitutionalPlanService extends BaseService {
     }
 
     const updatedPlan = await this.institutionalPlanRepository.update(id, data);
-
-    publishLogEvent({
-      event: this.logEvents.UPDATE,
-      resourceId: updatedPlan[0].id,
-      before: previousPlan,
-      after: updatedPlan[0],
-    });
 
     this.emitLogEvent({
       event: this.logEvents.UPDATE,
@@ -85,13 +85,8 @@ export class InstitutionalPlanService extends BaseService {
     }
 
     const deleted = await this.institutionalPlanRepository.delete(id);
-    
-    if (deleted) {
-      publishLogEvent({
-        event: this.logEvents.DELETE,
-        resourceId: id,
-      });
 
+    if (deleted) {
       this.emitLogEvent({
         event: this.logEvents.DELETE,
         resourceId: id,

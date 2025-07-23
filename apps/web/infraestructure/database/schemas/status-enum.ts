@@ -30,3 +30,11 @@ export const ProjectStatusEnum = t.pgEnum("project_status", [
   "APPROVED",
   "REQUEST_CHANGES",
 ]);
+
+export const ActivityStatusEnum = t.pgEnum("activity_status", [
+  "PLANNED",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+  "ON_HOLD",
+]);

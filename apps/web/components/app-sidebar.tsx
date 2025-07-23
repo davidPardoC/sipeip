@@ -1,7 +1,6 @@
 import {
   Building2,
   Calendar,
-  ChartSpline,
   LayoutDashboard,
   Notebook,
   LogOut,
@@ -49,12 +48,6 @@ const MenuConfig = {
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
         {
-          title: "Indicadores",
-          url: "/home/indicadores",
-          icon: <ChartSpline />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
-        },
-        {
           title: "Planes",
           url: "/home/planes",
           icon: <Calendar />,
@@ -68,7 +61,11 @@ const MenuConfig = {
           title: "Programas",
           url: "/home/program",
           icon: <Notebook />,
-          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+          allowedRoles: [
+            ROLES.SYS_ADMIN,
+            ROLES.PLANIFICATION_TECHNICIAN,
+            ROLES.INSTITUTIONAL_REVIEWER,
+          ],
         },
 
         {

@@ -75,4 +75,9 @@ export const LOG_EVENTS = {
     UPDATE: "goal_update",
     DELETE: "goal_delete",
   },
+  ACTIVITIES: {
+    CREATE: "activity_create",
+    UPDATE: "activity_update",
+    DELETE: "activity_delete",
+  },
 };

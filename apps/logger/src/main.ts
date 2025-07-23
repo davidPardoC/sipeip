@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -19,7 +17,11 @@ async function bootstrap() {
     },
   );
 
-  await app.listen();
+  const api = await NestFactory.create(AppModule);
+  api.setGlobalPrefix('/api/logger');
+
+  await Promise.all([app.listen(), api.listen(5500)]);
+  console.log('Logger service is running on port 5500');
 }
 
 bootstrap();

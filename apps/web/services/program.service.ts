@@ -3,6 +3,7 @@ import { ProgramRepository } from "@/repositories/program.repository";
 import { Program } from "@/types/domain/program.entity";
 import { LOG_EVENTS } from "@/types/event.types";
 import { BaseService } from "./base.service";
+import { checkAuth } from "@/lib/auth.utils";
 
 export class ProgramService extends BaseService {
   private logEvents = LOG_EVENTS.PROGRAMS;
@@ -12,8 +13,12 @@ export class ProgramService extends BaseService {
   }
 
   async create(program: Partial<Program>): Promise<Program[]> {
+
+    const session = await checkAuth()
+
     const newProgram = await this.programRepository.create({
       ...program,
+      createdBy: session.user?.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
@@ -86,5 +91,9 @@ export class ProgramService extends BaseService {
     }
     
     return deleted;
+  }
+
+  async getByCreatedBy(createdAt: string): Promise<Program[]> {
+    return this.programRepository.getByCreatedBy(createdAt);
   }
 }
