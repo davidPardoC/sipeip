@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Notebook,
   LogOut,
+  Flag,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -80,7 +81,7 @@ const MenuConfig = {
     },
     {
       allowedRoles: [ROLES.SYS_ADMIN],
-      title: "Sectores",
+      title: "Configuracion",
       subSections: [
         {
           title: "Macro Sectores",
@@ -104,6 +105,12 @@ const MenuConfig = {
           title: "Entidades",
           url: "/home/entidades",
           icon: <Building2 />,
+          allowedRoles: [ROLES.SYS_ADMIN],
+        },
+        {
+          title: "ODS",
+          url: "/home/ods",
+          icon: <Flag />,
           allowedRoles: [ROLES.SYS_ADMIN],
         },
       ],

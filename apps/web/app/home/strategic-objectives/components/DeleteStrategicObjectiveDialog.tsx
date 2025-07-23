@@ -19,9 +19,10 @@ import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 
 interface DeleteStrategicObjectiveDialogProps {
   objective: StrategicObjective;
+  onObjectiveDeleted?: () => void;
 }
 
-const DeleteStrategicObjectiveDialog = ({ objective }: DeleteStrategicObjectiveDialogProps) => {
+const DeleteStrategicObjectiveDialog = ({ objective, onObjectiveDeleted }: DeleteStrategicObjectiveDialogProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -30,6 +31,9 @@ const DeleteStrategicObjectiveDialog = ({ objective }: DeleteStrategicObjectiveD
       const result = await deleteStrategicObjective(objective.id);
       if (result.success) {
         console.log("Objetivo estratégico eliminado exitosamente");
+        if (onObjectiveDeleted) {
+          onObjectiveDeleted();
+        }
       } else {
         console.error(result.error || "Error al eliminar el objetivo estratégico");
       }

@@ -6,10 +6,10 @@ import { supabase } from '@/infraestructure/storage/supabase';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const attachmentId = parseInt(params.id);
+    const attachmentId = parseInt((await params).id);
 
     if (isNaN(attachmentId)) {
       return NextResponse.json(

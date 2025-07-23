@@ -6,7 +6,8 @@ import { ROLES } from "@/constants/role.constants";
 const PlanesPage = async () => {
   const session = await checkServerAuth(
     ROLES.SYS_ADMIN,
-    ROLES.PLANIFICATION_TECHNICIAN
+    ROLES.PLANIFICATION_TECHNICIAN,
+    ROLES.INSTITUTIONAL_REVIEWER
   );
   return <InstitutionalPlansTable session={session} />;
 };

@@ -18,7 +18,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select, SelectOption } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Loader2 } from "lucide-react";
@@ -207,30 +213,35 @@ const InstitutionalPlanForm: React.FC<InstitutionalPlanFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Entidad Pública</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value?.toString() || ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value ? parseInt(value, 10) : undefined);
-                      }}
-                      disabled={isLoadingEntities}
-                    >
-                      <SelectOption value="" disabled>
-                        {isLoadingEntities
-                          ? "Cargando entidades..."
-                          : "Selecciona una entidad pública"}
-                      </SelectOption>
+                  <Select
+                    value={field.value?.toString() || ""}
+                    onValueChange={(value: string) => {
+                      field.onChange(value ? parseInt(value, 10) : undefined);
+                    }}
+                    disabled={isLoadingEntities}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            isLoadingEntities
+                              ? "Cargando entidades..."
+                              : "Selecciona una entidad pública"
+                          }
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
                       {publicEntities.map((entity) => (
-                        <SelectOption
+                        <SelectItem
                           key={entity.id}
                           value={entity.id.toString()}
                         >
                           {entity.name} ({entity.code})
-                        </SelectOption>
+                        </SelectItem>
                       ))}
-                    </Select>
-                  </FormControl>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -272,19 +283,22 @@ const InstitutionalPlanForm: React.FC<InstitutionalPlanFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    >
-                      <SelectOption value="" disabled>
-                        Selecciona un estado
-                      </SelectOption>
-                      <SelectOption value="ACTIVE">Activo</SelectOption>
-                      <SelectOption value="INACTIVE">Inactivo</SelectOption>
-                      <SelectOption value="ARCHIVED">Archivado</SelectOption>
-                    </Select>
-                  </FormControl>
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un estado" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="ACTIVE">Activo</SelectItem>
+                      <SelectItem value="INACTIVE">Inactivo</SelectItem>
+                      <SelectItem value="ARCHIVED">Archivado</SelectItem>
+                      <SelectItem value="DRAFT">Borrador</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

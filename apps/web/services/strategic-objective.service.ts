@@ -1,26 +1,27 @@
-import { publishLogEvent } from "@/infraestructure/kafka/kafka.publisher";
 import { StrategicObjectiveRepository } from "@/repositories/strategic-objective.repository";
-import { StrategicObjective, StrategicObjectiveWithPlan } from "@/types/domain/strategic-objective.entity";
+import {
+  StrategicObjective,
+  StrategicObjectiveWithPlan,
+} from "@/types/domain/strategic-objective.entity";
 import { LOG_EVENTS } from "@/types/event.types";
 import { BaseService } from "./base.service";
 
 export class StrategicObjectiveService extends BaseService {
   private logEvents = LOG_EVENTS.STRATEGIC_OBJECTIVES;
 
-  constructor(private readonly strategicObjectiveRepository: StrategicObjectiveRepository) {
+  constructor(
+    private readonly strategicObjectiveRepository: StrategicObjectiveRepository
+  ) {
     super();
   }
 
-  async create(strategicObjective: Partial<StrategicObjective>): Promise<StrategicObjective[]> {
+  async create(
+    strategicObjective: Partial<StrategicObjective>
+  ): Promise<StrategicObjective[]> {
     const newObjective = await this.strategicObjectiveRepository.create({
       ...strategicObjective,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
-
-    publishLogEvent({
-      event: this.logEvents.CREATE,
-      resourceId: newObjective[0].id,
     });
 
     this.emitLogEvent({
@@ -41,21 +42,24 @@ export class StrategicObjectiveService extends BaseService {
     return this.strategicObjectiveRepository.getById(id);
   }
 
-  getByInstitutionalPlan(institutionalPlanId: number): Promise<StrategicObjective[]> {
-    return this.strategicObjectiveRepository.getByInstitutionalPlan(institutionalPlanId);
+  getByInstitutionalPlan(
+    institutionalPlanId: number
+  ): Promise<StrategicObjective[]> {
+    return this.strategicObjectiveRepository.getByInstitutionalPlan(
+      institutionalPlanId
+    );
   }
 
-  async update(id: number, data: Partial<StrategicObjective>): Promise<StrategicObjective[]> {
-    const previousObjective = await this.strategicObjectiveRepository.getById(id);
+  async update(
+    id: number,
+    data: Partial<StrategicObjective>
+  ): Promise<StrategicObjective[]> {
+    const previousObjective =
+      await this.strategicObjectiveRepository.getById(id);
 
     const result = await this.strategicObjectiveRepository.update(id, {
       ...data,
       updatedAt: new Date().toISOString(),
-    });
-
-    publishLogEvent({
-      event: this.logEvents.UPDATE,
-      resourceId: id,
     });
 
     this.emitLogEvent({
@@ -71,20 +75,15 @@ export class StrategicObjectiveService extends BaseService {
 
   async delete(id: number) {
     const deleted = await this.strategicObjectiveRepository.delete(id);
-    
-    if (deleted && deleted.length > 0) {
-      publishLogEvent({
-        event: this.logEvents.DELETE,
-        resourceId: id,
-      });
 
+    if (deleted && deleted.length > 0) {
       this.emitLogEvent({
         event: this.logEvents.DELETE,
         resourceId: id,
         message: `Strategic objective deleted successfully.`,
       });
     }
-    
+
     return deleted;
   }
 

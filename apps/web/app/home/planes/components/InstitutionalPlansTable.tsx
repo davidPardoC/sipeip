@@ -13,6 +13,7 @@ import { FileText, Target } from "lucide-react";
 import Link from "next/link";
 import { getInstitutionalPlans } from "../actions";
 import InstitutionalPlanForm from "./InstitutionalPlanForm";
+import DeleteInstitutionalPlanButton from "./DeleteInstitutionalPlanButton";
 import { Session } from "next-auth";
 
 type Props = {
@@ -155,12 +156,10 @@ const InstitutionalPlansTable = async ({ session }: Props) => {
                     </Link>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm">
-                      Editar
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Eliminar
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <InstitutionalPlanForm plan={plan} />
+                      <DeleteInstitutionalPlanButton plan={plan} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

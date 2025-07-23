@@ -4,14 +4,14 @@ import { programUpdateSchema } from "@/lib/validations/program.validators";
 import { ZodError } from "zod";
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: Props) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest, { params }: Props) {
 
 export async function PUT(request: NextRequest, { params }: Props) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -86,7 +86,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
 
 export async function DELETE(request: NextRequest, { params }: Props) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     if (isNaN(id)) {
       return NextResponse.json(

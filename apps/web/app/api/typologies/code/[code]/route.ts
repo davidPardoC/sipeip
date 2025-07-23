@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { typologyService } from "@/services";
 
+type RouteParams = {
+  params: Promise<{
+    code: string;
+  }>;
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: RouteParams
 ) {
   try {
-    const { code } = params;
+    const { code } = await params;
     
     if (!code) {
       return NextResponse.json(

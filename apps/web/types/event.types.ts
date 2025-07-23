@@ -55,4 +55,24 @@ export const LOG_EVENTS = {
     UPDATE: "typology_update",
     DELETE: "typology_delete",
   },
+  ODS_GOALS: {
+    CREATE: "ods_goal_create",
+    UPDATE: "ods_goal_update",
+    DELETE: "ods_goal_delete",
+  },
+  PND_OBJECTIVES: {
+    CREATE: "pnd_objective_create",
+    UPDATE: "pnd_objective_update",
+    DELETE: "pnd_objective_delete",
+  },
+  INDICATORS: {
+    CREATE: "indicator_create",
+    UPDATE: "indicator_update",
+    DELETE: "indicator_delete",
+  },
+  GOALS: {
+    CREATE: "goal_create",
+    UPDATE: "goal_update",
+    DELETE: "goal_delete",
+  },
 };

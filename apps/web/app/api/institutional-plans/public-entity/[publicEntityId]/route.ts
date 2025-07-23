@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { publicEntityId: string } }
+  { params }: { params: Promise<{ publicEntityId: string }> }
 ) {
   try {
-    const publicEntityId = parseInt(params.publicEntityId);
+    const publicEntityId = parseInt((await params).publicEntityId);
     const plans = await institutionalPlanService.getByPublicEntity(publicEntityId);
     return NextResponse.json(plans);
   } catch (error) {

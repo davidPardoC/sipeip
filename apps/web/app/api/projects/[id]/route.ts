@@ -19,13 +19,19 @@ const statusUpdateSchema = z.object({
   ])
 });
 
+interface RouteParams {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
-    const id = parseInt(params.id);
-    
+    const id = parseInt((await params).id);
+
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid project ID" },
@@ -54,11 +60,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
-    const id = parseInt(params.id);
-    
+    const id = parseInt((await params).id);
+
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid project ID" },
@@ -95,11 +101,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
-    const id = parseInt(params.id);
-    
+    const id = parseInt((await params).id);
+
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid project ID" },
@@ -120,11 +126,11 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
-    const id = parseInt(params.id);
-    
+    const id = parseInt((await params).id);
+
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid project ID" },

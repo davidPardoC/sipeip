@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectOption } from "@/components/ui/select";
 import { Plus, Edit } from "lucide-react";
 // import { toast } from "sonner";
 import {
@@ -33,9 +32,18 @@ import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 interface StrategicObjectiveFormProps {
   objective?: StrategicObjective;
   institutionalPlanId: number;
+  onObjectiveCreated?: () => void;
+  onObjectiveUpdated?: () => void;
+  trigger?: React.ReactNode;
 }
 
-const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObjectiveFormProps) => {
+const StrategicObjectiveForm = ({
+  objective,
+  institutionalPlanId,
+  onObjectiveCreated,
+  onObjectiveUpdated,
+  trigger,
+}: StrategicObjectiveFormProps) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,12 +72,19 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
 
       if (result.success) {
         console.log(
-          objective 
+          objective
             ? "Objetivo estratégico actualizado exitosamente"
             : "Objetivo estratégico creado exitosamente"
         );
         setOpen(false);
         form.reset();
+        
+        // Call appropriate callback
+        if (objective && onObjectiveUpdated) {
+          onObjectiveUpdated();
+        } else if (!objective && onObjectiveCreated) {
+          onObjectiveCreated();
+        }
       } else {
         console.error(result.error || "Error al procesar la solicitud");
       }
@@ -84,7 +99,7 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {objective ? (
+        {trigger || (objective ? (
           <Button variant="outline" size="sm">
             <Edit className="w-4 h-4" />
           </Button>
@@ -93,12 +108,14 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
             <Plus className="w-4 h-4 mr-2" />
             Nuevo Objetivo
           </Button>
-        )}
+        ))}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {objective ? "Editar Objetivo Estratégico" : "Crear Objetivo Estratégico"}
+            {objective
+              ? "Editar Objetivo Estratégico"
+              : "Crear Objetivo Estratégico"}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -124,12 +141,12 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
                   <FormItem>
                     <FormLabel>Estado</FormLabel>
                     <FormControl>
-                      <Select {...field} placeholder="Selecciona un estado">
-                        <SelectOption value="">Selecciona un estado</SelectOption>
-                        <SelectOption value="ACTIVE">Activo</SelectOption>
-                        <SelectOption value="INACTIVE">Inactivo</SelectOption>
-                        <SelectOption value="ARCHIVED">Archivado</SelectOption>
-                      </Select>
+                      <select className="border rounded-md p-2" {...field}>
+                        <option value="">Selecciona un estado</option>
+                        <option value="ACTIVE">Activo</option>
+                        <option value="INACTIVE">Inactivo</option>
+                        <option value="ARCHIVED">Archivado</option>
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +161,10 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nombre del objetivo estratégico" {...field} />
+                    <Input
+                      placeholder="Nombre del objetivo estratégico"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,7 +178,7 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
                 <FormItem>
                   <FormLabel>Descripción</FormLabel>
                   <FormControl>
-                    <textarea 
+                    <textarea
                       {...field}
                       placeholder="Descripción del objetivo estratégico"
                       className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -208,7 +228,11 @@ const StrategicObjectiveForm = ({ objective, institutionalPlanId }: StrategicObj
                 Cancelar
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Procesando..." : objective ? "Actualizar" : "Crear"}
+                {isLoading
+                  ? "Procesando..."
+                  : objective
+                    ? "Actualizar"
+                    : "Crear"}
               </Button>
             </div>
           </form>

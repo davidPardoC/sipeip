@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectOption } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { sectorCreateSchema } from "@/lib/validations/sectors.validators";
 import { createSector, updateSector, getMacroSectores } from "../actions";
 import { Sector } from "@/types/domain/sector.entity";
@@ -188,15 +188,20 @@ const SectorForm = ({ sector, mode = "create" }: SectorFormProps) => {
                   <FormLabel>Macro Sector</FormLabel>
                   <FormControl>
                     <Select
-                      {...field}
+                      onValueChange={field.onChange}
+                      value={field.value}
                       disabled={isLoading || loadingMacroSectores}
-                      placeholder="Selecciona un macro sector"
                     >
-                      {macroSectores.map((macroSector) => (
-                        <SelectOption key={macroSector.id} value={macroSector.id.toString()}>
-                          {macroSector.name} ({macroSector.code})
-                        </SelectOption>
-                      ))}
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un macro sector" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {macroSectores.map((macroSector) => (
+                          <SelectItem key={macroSector.id} value={macroSector.id.toString()}>
+                            {macroSector.name} ({macroSector.code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />

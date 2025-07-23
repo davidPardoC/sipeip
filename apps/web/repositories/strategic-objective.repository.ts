@@ -58,7 +58,7 @@ export class StrategicObjectiveRepository {
     return result.map(item => ({
       ...item,
       institutionalPlan: item.institutionalPlan?.id ? item.institutionalPlan : undefined,
-    }));
+    })) as StrategicObjectiveWithPlan[];
   }
 
   async getByInstitutionalPlan(institutionalPlanId: number): Promise<StrategicObjective[]> {
@@ -118,7 +118,7 @@ export class StrategicObjectiveRepository {
     return {
       ...item,
       institutionalPlan: item.institutionalPlan?.id ? item.institutionalPlan : undefined,
-    };
+    } as StrategicObjectiveWithPlan;
   }
 
   async update(id: number, data: Partial<StrategicObjective>): Promise<StrategicObjective[]> {

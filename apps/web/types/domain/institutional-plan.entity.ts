@@ -1,6 +1,6 @@
 import { PublicEntity } from "./public-entity.entity";
 
-export type StatusType = "ACTIVE" | "INACTIVE" | "ARCHIVED";
+export type StatusType = "ACTIVE" | "INACTIVE" | "ARCHIVED" | "DRAFT";
 
 export class InstitutionalPlan {
   id: number;

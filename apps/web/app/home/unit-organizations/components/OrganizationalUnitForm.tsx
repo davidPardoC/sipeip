@@ -27,17 +27,26 @@ import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { organizationalUnitCreateSchema } from "@/lib/validations/sectors.validators";
-import { createOrganizationalUnit, updateOrganizationalUnit, getOrganizationalUnitsByPublicEntity } from "../actions";
+import {
+  createOrganizationalUnit,
+  updateOrganizationalUnit,
+  getOrganizationalUnitsByPublicEntity,
+} from "../actions";
 import { OrganizationalUnit } from "@/types/domain/organizational-unit.entity";
 
-type OrganizationalUnitFormData = z.infer<typeof organizationalUnitCreateSchema>;
+type OrganizationalUnitFormData = z.infer<
+  typeof organizationalUnitCreateSchema
+>;
 
 interface OrganizationalUnitFormProps {
   editingUnit?: OrganizationalUnit;
   publicEntityId: number;
 }
 
-const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalUnitFormProps) => {
+const OrganizationalUnitForm = ({
+  editingUnit,
+  publicEntityId,
+}: OrganizationalUnitFormProps) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [parentUnits, setParentUnits] = useState<OrganizationalUnit[]>([]);
@@ -49,7 +58,8 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
       code: editingUnit?.code || "",
       name: editingUnit?.name || "",
       level: editingUnit?.level || 0,
-      status: (editingUnit?.status as "ACTIVE" | "INACTIVE" | "ARCHIVED") || "ACTIVE",
+      status:
+        (editingUnit?.status as "ACTIVE" | "INACTIVE" | "ARCHIVED") || "ACTIVE",
       parentId: editingUnit?.parentId || 1,
       publicEntityId: publicEntityId,
     },
@@ -59,7 +69,8 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
   useEffect(() => {
     const loadParentUnits = async () => {
       try {
-        const units = await getOrganizationalUnitsByPublicEntity(publicEntityId);
+        const units =
+          await getOrganizationalUnitsByPublicEntity(publicEntityId);
         setParentUnits(units);
       } catch (error) {
         console.error("Error loading parent units:", error);
@@ -78,7 +89,9 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
         code: editingUnit?.code || "",
         name: editingUnit?.name || "",
         level: editingUnit?.level || 0,
-        status: (editingUnit?.status as "ACTIVE" | "INACTIVE" | "ARCHIVED") || "ACTIVE",
+        status:
+          (editingUnit?.status as "ACTIVE" | "INACTIVE" | "ARCHIVED") ||
+          "ACTIVE",
         parentId: editingUnit?.parentId || 1,
         publicEntityId: publicEntityId,
       });
@@ -89,7 +102,7 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
     setIsLoading(true);
     try {
       const formData = new FormData();
-      
+
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formData.append(key, value.toString());
@@ -130,7 +143,9 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Editar Unidad Organizacional" : "Nueva Unidad Organizacional"}
+            {isEditing
+              ? "Editar Unidad Organizacional"
+              : "Nueva Unidad Organizacional"}
           </DialogTitle>
           <DialogDescription>
             {isEditing
@@ -163,11 +178,13 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
                   <FormItem>
                     <FormLabel>Nivel</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0" 
-                        {...field} 
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -183,7 +200,10 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: Dirección General de Planificación" {...field} />
+                    <Input
+                      placeholder="Ej: Dirección General de Planificación"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -216,10 +236,12 @@ const OrganizationalUnitForm = ({ editingUnit, publicEntityId }: OrganizationalU
                   <FormItem>
                     <FormLabel>Unidad Padre</FormLabel>
                     <FormControl>
-                      <Select 
-                        {...field} 
-                        value={field.value?.toString()} 
-                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      <Select
+                        {...field}
+                        value={field.value?.toString()}
+                        onChange={(e: { target: { value: string } }) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
                         placeholder="Selecciona la unidad padre"
                       >
                         <option value="1">Raíz</option>

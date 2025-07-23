@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectOption } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { microSectorCreateSchema } from "@/lib/validations/sectors.validators";
 import { createMicroSector, updateMicroSector, getSectores } from "../actions";
 import { MicroSector } from "@/types/domain/micro-sector.entity";
@@ -188,15 +188,20 @@ const MicroSectorForm = ({ microSector, mode = "create" }: MicroSectorFormProps)
                   <FormLabel>Sector</FormLabel>
                   <FormControl>
                     <Select
-                      {...field}
+                      onValueChange={field.onChange}
+                      value={field.value}
                       disabled={isLoading || loadingSectores}
-                      placeholder="Selecciona un sector"
                     >
-                      {sectores.map((sector) => (
-                        <SelectOption key={sector.id} value={sector.id.toString()}>
-                          {sector.name} ({sector.code})
-                        </SelectOption>
-                      ))}
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un sector" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sectores.map((sector) => (
+                          <SelectItem key={sector.id} value={sector.id.toString()}>
+                            {sector.name} ({sector.code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />

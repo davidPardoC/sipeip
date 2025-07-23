@@ -4,9 +4,9 @@ import { checkServerAuth } from "@/lib/auth.utils";
 import { ROLES } from "@/constants/role.constants";
 
 interface UnitOrganizationsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     publicEntity?: string;
-  };
+  }>;
 }
 
 const UnitOrganizationsPage = async ({

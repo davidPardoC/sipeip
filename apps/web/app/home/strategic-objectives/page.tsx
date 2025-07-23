@@ -4,9 +4,9 @@ import StrategicObjectivesTable from "./components/StrategicObjectivesTable";
 import { getInstitutionalPlanById } from "../planes/actions";
 
 interface StrategicObjectivesPageProps {
-  searchParams: {
+  searchParams: Promise<{
     institutionalPlanId?: string;
-  };
+  }>;
 }
 
 const StrategicObjectivesPage = async ({

@@ -134,57 +134,70 @@ const ProgramPage = () => {
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
-        <div className="grid gap-4">
+        <div className="border rounded-lg">
           {programs.length === 0 ? (
-            <div className="text-center text-gray-500">No programs found</div>
+            <div className="text-center text-gray-500 p-8">No programs found</div>
           ) : (
-            programs.map((program) => (
-              <div key={program.id} className="border rounded-lg p-4 shadow-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-xl font-semibold">{program.name}</h3>
-                    <p className="text-gray-600">Budget: ${program.budget}</p>
-                    <p className="text-gray-600">
-                      Period: {program.startDate} to {program.endDate}
-                    </p>
-                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                      program.status === 'ACTIVE' 
-                        ? 'bg-green-100 text-green-800'
-                        : program.status === 'INACTIVE'
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {program.status}
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Link href={`/home/projects?programId=${program.id}`}>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                      >
-                        <FolderOpen className="h-4 w-4 mr-2" />
-                        Projects
-                      </Button>
-                    </Link>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEdit(program)}
-                    >
-                      Edit
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={() => handleDelete(program.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))
+            <table className="w-full">
+              <thead>
+                <tr className="border-b bg-gray-50">
+                  <th className="text-left p-4 font-semibold">Name</th>
+                  <th className="text-left p-4 font-semibold">Budget</th>
+                  <th className="text-left p-4 font-semibold">Start Date</th>
+                  <th className="text-left p-4 font-semibold">End Date</th>
+                  <th className="text-left p-4 font-semibold">Status</th>
+                  <th className="text-right p-4 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {programs.map((program) => (
+                  <tr key={program.id} className="border-b hover:bg-gray-50">
+                    <td className="p-4 font-medium">{program.name}</td>
+                    <td className="p-4">${program.budget}</td>
+                    <td className="p-4">{program.startDate}</td>
+                    <td className="p-4">{program.endDate}</td>
+                    <td className="p-4">
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                        program.status === 'ACTIVE' 
+                          ? 'bg-green-100 text-green-800'
+                          : program.status === 'INACTIVE'
+                          ? 'bg-gray-100 text-gray-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {program.status}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-2 justify-end">
+                        <Link href={`/home/projects?programId=${program.id}`}>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                          >
+                            <FolderOpen className="h-4 w-4 mr-2" />
+                            Projects
+                          </Button>
+                        </Link>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEdit(program)}
+                        >
+                          Edit
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDelete(program.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       )}

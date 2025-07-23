@@ -5,7 +5,7 @@ export const institutionalPlanCreateSchema = z.object({
   version: z.string().min(1, "La versión es requerida"),
   periodStart: z.string().min(1, "La fecha de inicio es requerida"),
   periodEnd: z.string().min(1, "La fecha de fin es requerida"),
-  status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED"]).optional(),
+  status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED", "DRAFT"]).optional(),
   publicEntityId: z.number().min(1, "La entidad pública es requerida"),
   createdBy: z.string().optional(),
 });
@@ -15,7 +15,7 @@ export const institutionalPlanUpdateSchema = z.object({
   version: z.string().min(1, "La versión es requerida").optional(),
   periodStart: z.string().min(1, "La fecha de inicio es requerida").optional(),
   periodEnd: z.string().min(1, "La fecha de fin es requerida").optional(),
-  status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED"]).optional(),
+  status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED", "DRAFT"]).optional(),
   publicEntityId: z.number().min(1, "La entidad pública es requerida"),
 }).refine(
   (data) => {

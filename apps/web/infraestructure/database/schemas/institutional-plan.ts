@@ -1,6 +1,6 @@
 import * as t from "drizzle-orm/pg-core";
 import { publicEntity } from "./public-entity.ts";
-import { StatusEnum } from "./status-enum.ts";
+import { PlanStatusEnum } from "./status-enum.ts";
 
 export const institutionalPlan = t.pgTable("institutional_plan", {
   id: t.serial("id").primaryKey(),
@@ -8,7 +8,7 @@ export const institutionalPlan = t.pgTable("institutional_plan", {
   version: t.text("version").notNull(),
   periodStart: t.timestamp("period_start", { mode: "string" }).notNull(),
   periodEnd: t.timestamp("period_end", { mode: "string" }).notNull(),
-  status: StatusEnum(),
+  status: PlanStatusEnum(),
   // Audit fields
   createdBy: t.text("created_by"),
   createdAt: t.timestamp("created_at", { mode: "string" }).defaultNow(),

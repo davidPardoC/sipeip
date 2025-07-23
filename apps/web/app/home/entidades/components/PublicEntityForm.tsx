@@ -23,7 +23,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { publicEntityCreateSchema } from "@/lib/validations/sectors.validators";
@@ -194,10 +200,15 @@ const PublicEntityForm = ({ editingEntity }: PublicEntityFormProps) => {
                   <FormItem>
                     <FormLabel>Nivel de Gobierno</FormLabel>
                     <FormControl>
-                      <Select {...field} placeholder="Selecciona el nivel">
-                        <option value="NACIONAL">Nacional</option>
-                        <option value="REGIONAL">Regional</option>
-                        <option value="LOCAL">Local</option>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el nivel" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NACIONAL">Nacional</SelectItem>
+                          <SelectItem value="REGIONAL">Regional</SelectItem>
+                          <SelectItem value="LOCAL">Local</SelectItem>
+                        </SelectContent>
                       </Select>
                     </FormControl>
                     <FormMessage />
@@ -212,10 +223,15 @@ const PublicEntityForm = ({ editingEntity }: PublicEntityFormProps) => {
                   <FormItem>
                     <FormLabel>Estado</FormLabel>
                     <FormControl>
-                      <Select {...field} placeholder="Selecciona el estado">
-                        <option value="ACTIVE">Activo</option>
-                        <option value="INACTIVE">Inactivo</option>
-                        <option value="ARCHIVED">Archivado</option>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el estado" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ACTIVE">Activo</SelectItem>
+                          <SelectItem value="INACTIVE">Inactivo</SelectItem>
+                          <SelectItem value="ARCHIVED">Archivado</SelectItem>
+                        </SelectContent>
                       </Select>
                     </FormControl>
                     <FormMessage />
@@ -232,16 +248,19 @@ const PublicEntityForm = ({ editingEntity }: PublicEntityFormProps) => {
                   <FormLabel>Subsector</FormLabel>
                   <FormControl>
                     <Select 
-                      {...field} 
-                      value={field.value?.toString()} 
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                      placeholder="Selecciona el subsector"
+                      onValueChange={(value: string) => field.onChange(parseInt(value))}
+                      value={field.value?.toString()}
                     >
-                      {microSectors.map((sector) => (
-                        <option key={sector.id} value={sector.id.toString()}>
-                          {sector.name} ({sector.code})
-                        </option>
-                      ))}
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el subsector" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {microSectors.map((sector) => (
+                          <SelectItem key={sector.id} value={sector.id.toString()}>
+                            {sector.name} ({sector.code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />

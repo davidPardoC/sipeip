@@ -4,16 +4,22 @@ import { projectObservationUpdateSchema } from "@/lib/validations/project-observ
 import { checkAuth } from "@/lib/auth.utils";
 import { ZodError } from "zod";
 
+type RouteParams = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     // Check authentication
     await checkAuth();
-    
-    const id = parseInt(params.id);
-    
+
+    const id = parseInt((await params).id);
+
     if (isNaN(id)) {
       return NextResponse.json(
         { error: "Invalid observation ID" },
@@ -42,7 +48,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     // Check authentication and get user session
@@ -55,7 +61,7 @@ export async function PUT(
       );
     }
     
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -107,13 +113,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     // Check authentication
     await checkAuth();
     
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     if (isNaN(id)) {
       return NextResponse.json(

@@ -36,6 +36,7 @@ const ProjectFilesModal: React.FC<ProjectFilesModalProps> = ({
     if (isOpen && project) {
       loadExistingAttachments();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, project]);
 
   const loadExistingAttachments = async () => {

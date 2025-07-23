@@ -8,6 +8,11 @@ import { StrategicObjectiveRepository } from "./strategic-objective.repository";
 import { ProgramRepository } from "./program.repository";
 import { ProjectRepository } from "./project.repository";
 import { TypologyRepository } from "./typology.repository";
+import { OdsGoalRepository } from "./ods-goal.repository";
+import { PndObjectiveRepository } from "./pnd-objective.repository";
+import { ObjectiveAlignmentRepository } from "./objective-alignment.repository";
+import { IndicatorRepository } from "./indicator.repository";
+import { GoalRepository } from "./goal.repository";
 import { projectObservationRepository } from "./project-observation.repository";
 
 const macroSectorRepo = new MacroSectorRepository();
@@ -20,22 +25,30 @@ const strategicObjectiveRepo = new StrategicObjectiveRepository();
 const programRepo = new ProgramRepository();
 const projectRepo = new ProjectRepository();
 const typologyRepo = new TypologyRepository();
+const odsGoalRepo = new OdsGoalRepository();
+const pndObjectiveRepo = new PndObjectiveRepository();
+const objectiveAlignmentRepo = new ObjectiveAlignmentRepository();
+const indicatorRepo = new IndicatorRepository();
+const goalRepo = new GoalRepository();
 
-export { 
-  macroSectorRepo, 
-  sectorRepo, 
-  microSectorRepo, 
-  publicEntityRepo, 
+export {
+  macroSectorRepo,
+  sectorRepo,
+  microSectorRepo,
+  publicEntityRepo,
   organizationalUnitRepo,
   institutionalPlanRepo,
   strategicObjectiveRepo,
   programRepo,
   projectRepo,
   typologyRepo,
+  odsGoalRepo,
+  pndObjectiveRepo,
+  objectiveAlignmentRepo,
+  indicatorRepo,
+  goalRepo,
   projectObservationRepository
-};
-
-export type {
+};export type {
   MacroSectorRepository,
   SectorRepository,
   MicroSectorRepository,
@@ -46,4 +59,9 @@ export type {
   ProgramRepository,
   ProjectRepository,
   TypologyRepository,
+  OdsGoalRepository,
+  PndObjectiveRepository,
+  ObjectiveAlignmentRepository,
+  IndicatorRepository,
+  GoalRepository,
 };

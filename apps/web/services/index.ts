@@ -9,6 +9,10 @@ import {
   programRepo,
   projectRepo,
   typologyRepo,
+  odsGoalRepo,
+  pndObjectiveRepo,
+  indicatorRepo,
+  goalRepo,
 } from "@/repositories";
 import { MacroSectorService } from "./macro-sector.service";
 import { MicroSectorService } from "./micro-sector.service";
@@ -20,6 +24,11 @@ import { StrategicObjectiveService } from "./strategic-objective.service";
 import { ProgramService } from "./program.service";
 import { ProjectService } from "./project.service";
 import { TypologyService } from "./typology.service";
+import { OdsGoalService } from "./ods-goal.service";
+import { PndObjectiveService } from "./pnd-objective.service";
+import { ObjectiveAlignmentService } from "./objective-alignment.service";
+import { IndicatorService } from "./indicator.service";
+import { GoalService } from "./goal.service";
 import { projectObservationService } from "./project-observation.service";
 
 const sectorService = new SectorService(sectorRepo);
@@ -32,6 +41,11 @@ const strategicObjectiveService = new StrategicObjectiveService(strategicObjecti
 const programService = new ProgramService(programRepo);
 const projectService = new ProjectService(projectRepo);
 const typologyService = new TypologyService(typologyRepo);
+const odsGoalService = new OdsGoalService(odsGoalRepo);
+const pndObjectiveService = new PndObjectiveService(pndObjectiveRepo);
+const objectiveAlignmentService = new ObjectiveAlignmentService();
+const indicatorService = new IndicatorService(indicatorRepo);
+const goalService = new GoalService(goalRepo);
 
 export {
   sectorService,
@@ -44,5 +58,10 @@ export {
   programService,
   projectService,
   typologyService,
+  odsGoalService,
+  pndObjectiveService,
+  objectiveAlignmentService,
+  indicatorService,
+  goalService,
   projectObservationService,
 };

@@ -1,5 +1,6 @@
 import { db } from "@/infraestructure/database/connection";
 import { publicEntity } from "@/infraestructure/database/schemas";
+import { Status } from "@/infraestructure/database/schemas/status-enum";
 import { PublicEntity } from "@/types/domain/public-entity.entity";
 import { and, desc, eq, isNull, like, or, ne } from "drizzle-orm";
 
@@ -56,7 +57,7 @@ export class PublicEntityRepository {
   getByMicroSectorId(microSectorId: number) {
     return db.query.publicEntity.findMany({
       where: and(
-        eq(publicEntity.microSectorId, microSectorId),
+        eq(publicEntity.subSectorId, microSectorId),
         isNull(publicEntity.deletedAt)
       ),
       orderBy: [desc(publicEntity.updatedAt)],
@@ -64,7 +65,7 @@ export class PublicEntityRepository {
   }
 
   // Get public entities by status
-  getByStatus(status: string) {
+  getByStatus(status: Status) {
     return db.query.publicEntity.findMany({
       where: and(
         eq(publicEntity.status, status),
@@ -142,9 +143,9 @@ export class PublicEntityRepository {
   }
 
   // Bulk update status for multiple entities
-  async bulkUpdateStatus(ids: number[], status: string, updatedBy?: string) {
+  async bulkUpdateStatus(ids: number[], status: Status, updatedBy?: string) {
     const updates: Partial<PublicEntity> = {
-      status,
+      status: status,
       updatedAt: new Date().toISOString(),
     };
 

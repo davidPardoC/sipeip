@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -9,21 +12,55 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Target } from "lucide-react";
+import { Target, Edit, Link, BarChart3 } from "lucide-react";
 import { getStrategicObjectivesByInstitutionalPlan } from "../actions";
+import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 import StrategicObjectiveForm from "./StrategicObjectiveForm";
+import DeleteStrategicObjectiveDialog from "./DeleteStrategicObjectiveDialog";
+import AlignmentModal from "./AlignmentModal";
 
 interface StrategicObjectivesTableProps {
   institutionalPlanId: number;
   institutionalPlanName?: string;
 }
 
-const StrategicObjectivesTable = async ({
+const StrategicObjectivesTable = ({
   institutionalPlanId,
   institutionalPlanName,
 }: StrategicObjectivesTableProps) => {
-  const strategicObjectives =
-    await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+  const router = useRouter();
+  const [strategicObjectives, setStrategicObjectives] = useState<StrategicObjective[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [alignmentModalOpen, setAlignmentModalOpen] = useState(false);
+  const [selectedObjective, setSelectedObjective] = useState<StrategicObjective | null>(null);
+
+  useEffect(() => {
+    const fetchObjectives = async () => {
+      try {
+        const objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        setStrategicObjectives(objectives);
+      } catch (error) {
+        console.error("Error fetching strategic objectives:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchObjectives();
+  }, [institutionalPlanId]);
+
+  const handleObjectiveUpdated = () => {
+    // Refetch data when an objective is created/updated
+    const fetchObjectives = async () => {
+      try {
+        const objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        setStrategicObjectives(objectives);
+      } catch (error) {
+        console.error("Error refetching strategic objectives:", error);
+      }
+    };
+    fetchObjectives();
+  };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
@@ -67,6 +104,15 @@ const StrategicObjectivesTable = async ({
     );
   };
 
+  const handleAlignmentClick = (objective: StrategicObjective) => {
+    setSelectedObjective(objective);
+    setAlignmentModalOpen(true);
+  };
+
+  const handleIndicatorsClick = (objectiveId: number) => {
+    router.push(`/home/strategic-objectives/${objectiveId}/indicators`);
+  };
+
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
@@ -80,7 +126,10 @@ const StrategicObjectivesTable = async ({
               : "Gestiona los objetivos estratégicos"}
           </p>
         </div>
-        <StrategicObjectiveForm institutionalPlanId={institutionalPlanId} />
+        <StrategicObjectiveForm 
+          institutionalPlanId={institutionalPlanId} 
+          onObjectiveCreated={handleObjectiveUpdated}
+        />
       </div>
 
       <div className="rounded-md border">
@@ -99,7 +148,16 @@ const StrategicObjectivesTable = async ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {strategicObjectives.length === 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center py-8">
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    <p className="text-sm text-muted-foreground">Cargando objetivos estratégicos...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : strategicObjectives.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="text-center py-8">
                   <div className="flex flex-col items-center justify-center space-y-3">
@@ -144,12 +202,37 @@ const StrategicObjectivesTable = async ({
                   <TableCell>{formatDateTime(objective.createdAt)}</TableCell>
                   <TableCell>{formatDateTime(objective.updatedAt)}</TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm">
-                      Editar
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleIndicatorsClick(objective.id)}
+                    >
+                      <BarChart3 className="w-4 h-4 mr-1" />
+                      Indicadores
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Eliminar
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleAlignmentClick(objective)}
+                    >
+                      <Link className="w-4 h-4 mr-1" />
+                      Alineación
                     </Button>
+                    <StrategicObjectiveForm 
+                      objective={objective}
+                      institutionalPlanId={institutionalPlanId}
+                      onObjectiveUpdated={handleObjectiveUpdated}
+                      trigger={
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4 mr-1" />
+                          Editar
+                        </Button>
+                      }
+                    />
+                    <DeleteStrategicObjectiveDialog 
+                      objective={objective} 
+                      onObjectiveDeleted={handleObjectiveUpdated} 
+                    />
                   </TableCell>
                 </TableRow>
               ))
@@ -157,6 +240,13 @@ const StrategicObjectivesTable = async ({
           </TableBody>
         </Table>
       </div>
+
+      {/* Alignment Modal */}
+      <AlignmentModal
+        isOpen={alignmentModalOpen}
+        onClose={() => setAlignmentModalOpen(false)}
+        selectedObjective={selectedObjective}
+      />
     </div>
   );
 };

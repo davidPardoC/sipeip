@@ -3,11 +3,18 @@
 import { institutionalPlanService, publicEntityService } from "@/services";
 import { InstitutionalPlanCreateInput, InstitutionalPlanUpdateInput } from "@/lib/validations/institutional-plan.validators";
 import { revalidatePath } from "next/cache";
-import { checkAuth } from "@/lib/auth.utils";
+import { checkAuth, checkRoles } from "@/lib/auth.utils";
+import { ROLES } from "@/constants/role.constants";
+import { InstitutionalPlan } from "@/types/domain/institutional-plan.entity";
 
 export async function getInstitutionalPlans(userCreatedId?: string) {
+
+  const session = await checkAuth();
+
+  const hasRole = checkRoles([ROLES.INSTITUTIONAL_REVIEWER], session)
+
   try {
-    if (userCreatedId) {
+    if (userCreatedId && !hasRole) {
       return await institutionalPlanService.getByUserId(userCreatedId);
     }
     return await institutionalPlanService.getAll();
@@ -47,7 +54,7 @@ export async function getPublicEntitiesForPlans() {
 export async function createInstitutionalPlan(data: InstitutionalPlanCreateInput) {
   try {
     const session = await checkAuth();
-    const result = await institutionalPlanService.create(data, session.user?.id);
+    const result = await institutionalPlanService.create(data as Partial<InstitutionalPlan>, session.user?.id);
     revalidatePath("/home/planes");
     return { success: true, data: result[0] };
   } catch (error) {
@@ -58,7 +65,7 @@ export async function createInstitutionalPlan(data: InstitutionalPlanCreateInput
 
 export async function updateInstitutionalPlan(id: number, data: InstitutionalPlanUpdateInput) {
   try {
-    const result = await institutionalPlanService.update(id, data);
+    const result = await institutionalPlanService.update(id, data as Partial<InstitutionalPlan>);
     revalidatePath("/home/planes");
     return { success: true, data: result[0] };
   } catch (error) {
