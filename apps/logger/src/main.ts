@@ -18,6 +18,7 @@ async function bootstrap() {
   );
 
   const api = await NestFactory.create(AppModule);
+  api.enableCors();
   api.setGlobalPrefix('/api/logger');
 
   await Promise.all([app.listen(), api.listen(5500)]);
