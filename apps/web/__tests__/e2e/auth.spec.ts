@@ -21,7 +21,7 @@ test("Should Login", async ({ page }) => {
 
   // Fill in the login form
   await page.fill('#username, input[name="username"]', "david.pardo");
-  await page.fill('#password, input[name="password"]', "Dp1105181083#");
+  await page.fill('#password, input[name="password"]', "test_password#");
   await page.click('input[type="submit"], button[type="submit"]');
 
   // Wait for redirection back to the app

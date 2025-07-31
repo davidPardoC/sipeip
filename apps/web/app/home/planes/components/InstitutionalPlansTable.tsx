@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,19 +11,40 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Target } from "lucide-react";
+import { FileText, Target, Download } from "lucide-react";
 import Link from "next/link";
 import { getInstitutionalPlans } from "../actions";
 import InstitutionalPlanForm from "./InstitutionalPlanForm";
 import DeleteInstitutionalPlanButton from "./DeleteInstitutionalPlanButton";
 import { Session } from "next-auth";
+import { InstitutionalPlanWithEntity } from "@/types/domain/institutional-plan.entity";
 
 type Props = {
   session: Session | null;
 };
 
-const InstitutionalPlansTable = async ({ session }: Props) => {
-  const institutionalPlans = await getInstitutionalPlans(session?.user?.id);
+const InstitutionalPlansTable = ({ session }: Props) => {
+  const [institutionalPlans, setInstitutionalPlans] = useState<InstitutionalPlanWithEntity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const plans = await getInstitutionalPlans(session?.user?.id);
+        setInstitutionalPlans(plans);
+      } catch (error) {
+        console.error('Error fetching institutional plans:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, [session?.user?.id]);
+
+  const handleDownloadReport = (planId: number) => {
+    window.open(`/api/reports/institutional-plan/${planId}`, '_blank');
+  };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
@@ -96,7 +119,16 @@ const InstitutionalPlansTable = async ({ session }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {institutionalPlans.length === 0 ? (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={10} className="text-center py-8">
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    <p className="text-sm text-muted-foreground">Cargando planes institucionales...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : institutionalPlans.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={10} className="text-center py-8">
                   <div className="flex flex-col items-center justify-center space-y-3">
@@ -157,6 +189,14 @@ const InstitutionalPlansTable = async ({ session }: Props) => {
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDownloadReport(plan.id)}
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Descargar Reporte
+                      </Button>
                       <InstitutionalPlanForm plan={plan} />
                       <DeleteInstitutionalPlanButton plan={plan} />
                     </div>
