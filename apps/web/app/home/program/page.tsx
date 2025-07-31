@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Program } from '@/types/domain/program.entity';
 import Link from 'next/link';
-import { FolderOpen } from 'lucide-react';
+import { FolderOpen, FileText } from 'lucide-react';
 
 const ProgramPage = () => {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -90,6 +90,30 @@ const ProgramPage = () => {
       } catch (error) {
         console.error('Error deleting program:', error);
       }
+    }
+  };
+
+  // Handle PDF report generation
+  const handleGenerateReport = async (id: number, name: string) => {
+    try {
+      const response = await fetch(`/api/reports/program/${id}`);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `programa-${name.replace(/[^a-zA-Z0-9]/g, "-")}-${id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        console.error('Error generating report');
+      }
+    } catch (error) {
+      console.error('Error generating report:', error);
     }
   };
 
@@ -178,6 +202,14 @@ const ProgramPage = () => {
                             Projects
                           </Button>
                         </Link>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleGenerateReport(program.id, program.name)}
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          PDF
+                        </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
