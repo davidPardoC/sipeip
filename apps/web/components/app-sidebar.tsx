@@ -1,3 +1,4 @@
+"use client";
 import {
   Building2,
   Calendar,
@@ -117,6 +118,8 @@ const MenuConfig = {
 
 export function AppSidebar() {
   const { data: session } = useSession();
+
+  console.log(session)
 
   const handleLogout = async () => {
     await signOut({ redirect: true });

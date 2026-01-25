@@ -17,6 +17,8 @@ export const PlanStatusEnum = t.pgEnum("plan_status", [
   "INACTIVE",
   "ARCHIVED",
   "DRAFT",
+  "UNDER_REVIEW",
+  "APPROVED",
 ]);
 
 export const ProjectStatusEnum = t.pgEnum("project_status", [

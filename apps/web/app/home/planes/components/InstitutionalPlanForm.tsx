@@ -297,6 +297,8 @@ const InstitutionalPlanForm: React.FC<InstitutionalPlanFormProps> = ({
                       <SelectItem value="INACTIVE">Inactivo</SelectItem>
                       <SelectItem value="ARCHIVED">Archivado</SelectItem>
                       <SelectItem value="DRAFT">Borrador</SelectItem>
+                      <SelectItem value="UNDER_REVIEW">En Revisión</SelectItem>
+                      <SelectItem value="APPROVED">Aprobado</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

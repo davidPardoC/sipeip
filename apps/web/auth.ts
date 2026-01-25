@@ -7,6 +7,7 @@ import { TokenPayload } from "./types/domain/token.entity";
 import { db } from "./infraestructure/database/connection";
 import { usersMapping } from "./infraestructure/database/schemas/users_mapping";
 
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
     signIn: async (message) => {

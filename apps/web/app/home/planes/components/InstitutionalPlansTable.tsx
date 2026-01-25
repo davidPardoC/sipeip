@@ -24,7 +24,9 @@ type Props = {
 };
 
 const InstitutionalPlansTable = ({ session }: Props) => {
-  const [institutionalPlans, setInstitutionalPlans] = useState<InstitutionalPlanWithEntity[]>([]);
+  const [institutionalPlans, setInstitutionalPlans] = useState<
+    InstitutionalPlanWithEntity[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const InstitutionalPlansTable = ({ session }: Props) => {
         const plans = await getInstitutionalPlans(session?.user?.id);
         setInstitutionalPlans(plans);
       } catch (error) {
-        console.error('Error fetching institutional plans:', error);
+        console.error("Error fetching institutional plans:", error);
       } finally {
         setLoading(false);
       }
@@ -43,7 +45,7 @@ const InstitutionalPlansTable = ({ session }: Props) => {
   }, [session?.user?.id]);
 
   const handleDownloadReport = (planId: number) => {
-    window.open(`/api/reports/institutional-plan/${planId}`, '_blank');
+    window.open(`/api/reports/institutional-plan/${planId}`, "_blank");
   };
 
   const formatDate = (dateString: string | null) => {
@@ -69,20 +71,29 @@ const InstitutionalPlansTable = ({ session }: Props) => {
   const getStatusBadge = (status: string | null) => {
     if (!status) return <Badge variant="secondary">N/A</Badge>;
 
-    const variants = {
-      ACTIVE: "default",
-      INACTIVE: "secondary",
-      ARCHIVED: "destructive",
-    } as const;
-
     const labels = {
       ACTIVE: "Activo",
       INACTIVE: "Inactivo",
       ARCHIVED: "Archivado",
+      DRAFT: "Borrador",
+      UNDER_REVIEW: "En Revisión",
+      APPROVED: "Aprobado",
     } as const;
 
+    const styleClasses = {
+      ACTIVE: "text-green-600 bg-green-100",
+      INACTIVE: "text-gray-600 bg-gray-100",
+      ARCHIVED: "text-white bg-gray-800",
+      DRAFT: "text-gray-600 bg-gray-100",
+      UNDER_REVIEW: "text-yellow-600 bg-yellow-100",
+      APPROVED: "text-blue-600 bg-blue-100",
+    } as const;
+
+
     return (
-      <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
+      <Badge
+        className={styleClasses[status as keyof typeof styleClasses] || ""}
+      >
         {labels[status as keyof typeof labels] || status}
       </Badge>
     );
@@ -124,7 +135,9 @@ const InstitutionalPlansTable = ({ session }: Props) => {
                 <TableCell colSpan={10} className="text-center py-8">
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                    <p className="text-sm text-muted-foreground">Cargando planes institucionales...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Cargando planes institucionales...
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -172,7 +185,8 @@ const InstitutionalPlansTable = ({ session }: Props) => {
                   <TableCell>
                     <div className="space-y-1">
                       <p className="text-sm">
-                        {formatDate(plan.periodStart)} - {formatDate(plan.periodEnd)}
+                        {formatDate(plan.periodStart)} -{" "}
+                        {formatDate(plan.periodEnd)}
                       </p>
                     </div>
                   </TableCell>
@@ -180,7 +194,9 @@ const InstitutionalPlansTable = ({ session }: Props) => {
                   <TableCell>{formatDateTime(plan.createdAt)}</TableCell>
                   <TableCell>{formatDateTime(plan.updatedAt)}</TableCell>
                   <TableCell>
-                    <Link href={`/home/strategic-objectives?institutionalPlanId=${plan.id}`}>
+                    <Link
+                      href={`/home/strategic-objectives?institutionalPlanId=${plan.id}`}
+                    >
                       <Button variant="outline" size="sm">
                         <Target className="w-4 h-4 mr-2" />
                         Ver Objetivos
@@ -189,8 +205,8 @@ const InstitutionalPlansTable = ({ session }: Props) => {
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <div className="flex justify-end gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => handleDownloadReport(plan.id)}
                       >
