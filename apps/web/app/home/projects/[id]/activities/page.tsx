@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, ArrowLeft } from "lucide-react";
+import { Plus, Search, ArrowLeft, Download } from "lucide-react";
 import { Activity } from "@/types/domain/activity.entity";
 import { Project } from "@/types/domain/project.entity";
 import ActivityCard from "./components/activity-card";
@@ -85,7 +85,7 @@ const ProjectActivitiesPage = () => {
   const handleSave = async (activityData: Partial<Activity>) => {
     try {
       let response;
-      
+
       if (editingActivity) {
         // Update existing activity
         response = await fetch(`/api/activities/${editingActivity.id}`, {
@@ -114,11 +114,11 @@ const ProjectActivitiesPage = () => {
         setIsDialogOpen(false);
         setEditingActivity(null);
         setSuccessMessage(
-          editingActivity 
-            ? "Activity updated successfully!" 
+          editingActivity
+            ? "Activity updated successfully!"
             : "Activity created successfully!"
         );
-        
+
         // Clear success message after 3 seconds
         setTimeout(() => {
           setSuccessMessage(null);
@@ -131,7 +131,7 @@ const ProjectActivitiesPage = () => {
 
   // Handle delete
   const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this activity?")) {
+    if (window.confirm("¿Estás seguro de que quieres eliminar esta actividad?")) {
       try {
         const response = await fetch(`/api/activities/${id}`, {
           method: "DELETE",
@@ -140,7 +140,7 @@ const ProjectActivitiesPage = () => {
         if (response.ok) {
           await fetchActivities();
           setSuccessMessage("Activity deleted successfully!");
-          
+
           // Clear success message after 3 seconds
           setTimeout(() => {
             setSuccessMessage(null);
@@ -185,6 +185,51 @@ const ProjectActivitiesPage = () => {
 
   const stats = getStatusStats();
 
+  // Handle CSV Export
+  const handleExportCSV = () => {
+    if (!filteredActivities.length) return;
+
+    const headers = [
+      "Código",
+      "Nombre",
+      "Descripción",
+      "Responsable",
+      "Fecha Inicio",
+      "Fecha Fin",
+      "Estado",
+      "Presupuesto Ejecutado",
+      "Avance (%)"
+    ];
+
+    const csvContent = [
+      headers.join(","),
+      ...filteredActivities.map(activity => {
+        const row = [
+          activity.code || "",
+          `"${(activity.name || "").replace(/"/g, '""')}"`,
+          `"${(activity.description || "").replace(/"/g, '""')}"`,
+          `"${(activity.responsiblePerson || "").replace(/"/g, '""')}"`,
+          activity.startDate ? new Date(activity.startDate).toLocaleDateString("es-ES") : "",
+          activity.endDate ? new Date(activity.endDate).toLocaleDateString("es-ES") : "",
+          activity.status || "",
+          activity.executedBudget || "0",
+          activity.progressPercent || "0"
+        ];
+        return row.join(",");
+      })
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `actividades_${projectId}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container mx-auto px-6 py-8">
       {/* Header */}
@@ -223,23 +268,23 @@ const ProjectActivitiesPage = () => {
           </div>
           <div className="bg-gray-50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-gray-600">{stats.planned}</div>
-            <div className="text-sm text-gray-500">Planned</div>
+            <div className="text-sm text-gray-500">Planificadas</div>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-yellow-600">{stats.inProgress}</div>
-            <div className="text-sm text-yellow-500">In Progress</div>
+            <div className="text-sm text-yellow-500">En Proceso</div>
           </div>
           <div className="bg-green-50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
-            <div className="text-sm text-green-500">Completed</div>
+            <div className="text-sm text-green-500">Completadas</div>
           </div>
           <div className="bg-red-50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-red-600">{stats.cancelled}</div>
-            <div className="text-sm text-red-500">Cancelled</div>
+            <div className="text-sm text-red-500">Canceladas</div>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-purple-600">{stats.onHold}</div>
-            <div className="text-sm text-purple-500">On Hold</div>
+            <div className="text-sm text-purple-500">En Espera</div>
           </div>
         </div>
 
@@ -254,12 +299,23 @@ const ProjectActivitiesPage = () => {
               className="pl-10"
             />
           </div>
-          <RBACComponent roles={[ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN]} session={session}>
-            <Button onClick={handleNew} className="flex items-center space-x-2">
-              <Plus className="h-4 w-4" />
-              <span>New Activity</span>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              onClick={handleExportCSV}
+              className="flex items-center space-x-2"
+              disabled={filteredActivities.length === 0}
+            >
+              <Download className="h-4 w-4" />
+              <span>Exportar CSV</span>
             </Button>
-          </RBACComponent>
+            <RBACComponent roles={[ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN]} session={session}>
+              <Button onClick={handleNew} className="flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>New Activity</span>
+              </Button>
+            </RBACComponent>
+          </div>
         </div>
       </div>
 

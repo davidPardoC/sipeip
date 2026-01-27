@@ -14,30 +14,24 @@ const StrategicObjectivesPage = async ({
 }: StrategicObjectivesPageProps) => {
   const { institutionalPlanId } = await searchParams;
 
-  // Si no hay institutionalPlanId, redirigir a planes
-  if (!institutionalPlanId || isNaN(Number(institutionalPlanId))) {
-    redirect("/home/planes");
-  }
+  const planId = institutionalPlanId ? Number(institutionalPlanId) : undefined;
+  let institutionalPlanName: string | undefined;
 
-  const planId = Number(institutionalPlanId);
-
-  // Obtener información del plan institucional
-  let institutionalPlan;
-  try {
-    institutionalPlan = await getInstitutionalPlanById(planId);
-  } catch (error) {
-    console.error("Error fetching institutional plan:", error);
-    redirect("/home/planes");
-  }
-
-  if (!institutionalPlan) {
-    redirect("/home/planes");
+  if (planId && !isNaN(planId)) {
+    try {
+      const institutionalPlan = await getInstitutionalPlanById(planId);
+      if (institutionalPlan) {
+        institutionalPlanName = institutionalPlan.name;
+      }
+    } catch (error) {
+      console.error("Error fetching institutional plan:", error);
+    }
   }
 
   return (
     <StrategicObjectivesTable
       institutionalPlanId={planId}
-      institutionalPlanName={institutionalPlan.name}
+      institutionalPlanName={institutionalPlanName}
     />
   );
 };

@@ -1,6 +1,8 @@
 import { InstitutionalPlan } from "./institutional-plan.entity";
 
 export type StatusType = "ACTIVE" | "INACTIVE" | "ARCHIVED";
+export type ComplianceRuleType = "AND" | "OR";
+
 
 export class StrategicObjective {
   id: number;
@@ -10,7 +12,8 @@ export class StrategicObjective {
   status: StatusType | null;
   startTime: string;
   endTime: string;
-  institutionalPlanId: number;
+  institutionalPlanId: number | null;
+  complianceRule: ComplianceRuleType;
   createdBy: string | null;
   createdAt: string | null;
   updatedAt: string | null;
@@ -24,7 +27,8 @@ export class StrategicObjective {
     status: StatusType | null,
     startTime: string,
     endTime: string,
-    institutionalPlanId: number,
+    institutionalPlanId: number | null,
+    complianceRule: ComplianceRuleType,
     createdBy: string | null,
     createdAt: string | null,
     updatedAt: string | null,
@@ -38,6 +42,7 @@ export class StrategicObjective {
     this.startTime = startTime;
     this.endTime = endTime;
     this.institutionalPlanId = institutionalPlanId;
+    this.complianceRule = complianceRule;
     this.createdBy = createdBy;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

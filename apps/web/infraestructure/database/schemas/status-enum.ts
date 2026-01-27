@@ -40,3 +40,9 @@ export const ActivityStatusEnum = t.pgEnum("activity_status", [
   "CANCELLED",
   "ON_HOLD",
 ]);
+
+export const ComplianceRuleEnum = t.pgEnum("compliance_rule", [
+  "AND",
+  "OR",
+]);
+

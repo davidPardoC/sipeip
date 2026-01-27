@@ -53,6 +53,7 @@ const db = drizzle({
     activity,
     activityStrategicObjective,
     activityIndicator,
+
   },
 });
 

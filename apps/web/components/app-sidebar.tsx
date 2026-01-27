@@ -6,6 +6,9 @@ import {
   Notebook,
   LogOut,
   Flag,
+  Activity,
+  Target,
+  FileChartColumn,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -70,9 +73,27 @@ const MenuConfig = {
         },
 
         {
-          title: "Reportes",
+          title: "Auditoría",
           url: "/home/reports",
           icon: <Building2 />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+        },
+        {
+          title: "Monitoreo de Actividades",
+          url: "/home/monitoring",
+          icon: <Activity />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+        },
+        {
+          title: "Reportes de Cumplimiento",
+          url: "/home/reports/compliance",
+          icon: <FileChartColumn />,
+          allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
+        },
+        {
+          title: "Objetivos Estratégicos",
+          url: "/home/strategic-objectives",
+          icon: <Target />,
           allowedRoles: [ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN],
         },
       ],

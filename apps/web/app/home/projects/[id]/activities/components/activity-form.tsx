@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,7 @@ import { Activity, ActivityStatus } from "@/types/domain/activity.entity";
 interface ActivityFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (activityData: Partial<Activity> & { objectiveIds?: number[] }) => void;
+  onSave: (activityData: Partial<Activity> & { objectiveIds?: number[] }) => Promise<void> | void;
   activity?: Activity | null;
   projectId: number;
 }
@@ -39,6 +40,8 @@ interface ActivityFormData {
   status: ActivityStatus;
   priority: string; // Store as string for Input match, convert to number
   isActive: boolean;
+  realStartDate?: string;
+  realEndDate?: string;
 }
 
 interface StrategicObjective {
@@ -69,6 +72,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
   const [selectedObjectives, setSelectedObjectives] = React.useState<number[]>([]);
   const [availableObjectives, setAvailableObjectives] = React.useState<StrategicObjective[]>([]);
   const [error, setError] = React.useState<string>("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   // Fetch Objectives
   React.useEffect(() => {
@@ -101,6 +105,8 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
         status: activity.status,
         priority: activity.priority ? activity.priority.toString() : "1",
         isActive: activity.isActive !== undefined ? activity.isActive : true,
+        realStartDate: activity.realStartDate || "",
+        realEndDate: activity.realEndDate || "",
       });
       // Set selected objectives if available in activity (need to populate them in backend or fetch separately)
       // Currently backend getAll/getById might not return joined objectives by default unless relations are set deeply.
@@ -122,13 +128,15 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
         status: "PLANNED",
         priority: "1",
         isActive: true,
+        realStartDate: "",
+        realEndDate: "",
       });
       setSelectedObjectives([]);
     }
     setError("");
   }, [activity, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (new Date(formData.endDate) < new Date(formData.startDate)) {
       setError("La fecha de fin no puede ser anterior a la fecha de inicio");
@@ -141,13 +149,23 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
       return;
     }
 
-    onSave({
-      ...formData,
-      priority: parseInt(formData.priority, 10),
-      objectiveIds: selectedObjectives,
-      projectId,
-      ...(activity && { id: activity.id }),
-    });
+    setIsSubmitting(true);
+    try {
+      await onSave({
+        ...formData,
+        priority: parseInt(formData.priority, 10),
+        objectiveIds: selectedObjectives,
+        projectId,
+        realStartDate: formData.realStartDate === "" ? undefined : formData.realStartDate,
+        realEndDate: formData.realEndDate === "" ? undefined : formData.realEndDate,
+        ...(activity && { id: activity.id }),
+      });
+    } catch (error) {
+      console.error("Error saving activity:", error);
+      setError("Ocurrió un error al guardar la actividad");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: keyof ActivityFormData, value: string | boolean) => {
@@ -166,7 +184,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {activity ? "Editar Actividad" : "Crear Nueva Actividad"}
@@ -204,7 +222,8 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 border-t pt-2 mt-2">
+            <h3 className="col-span-2 font-medium text-sm">Planificación</h3>
             <div className="space-y-2">
               <Label htmlFor="startDate">Fecha de Inicio *</Label>
               <Input
@@ -223,6 +242,28 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
                 value={formData.endDate}
                 onChange={(e) => handleChange("endDate", e.target.value)}
                 required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 border-t pt-4 mt-4">
+            <h3 className="col-span-2 font-medium text-sm">Ejecución Real</h3>
+            <div className="space-y-2">
+              <Label htmlFor="realStartDate">Inicio Real</Label>
+              <Input
+                id="realStartDate"
+                type="date"
+                value={formData.realStartDate || ""}
+                onChange={(e) => handleChange("realStartDate", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="realEndDate">Fin Real</Label>
+              <Input
+                id="realEndDate"
+                type="date"
+                value={formData.realEndDate || ""}
+                onChange={(e) => handleChange("realEndDate", e.target.value)}
               />
             </div>
           </div>
@@ -324,11 +365,23 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
           )}
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
               Cancelar
             </Button>
-            <Button type="submit">
-              {activity ? "Actualizar" : "Crear"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {activity ? "Actualizando..." : "Creando..."}
+                </>
+              ) : (
+                activity ? "Actualizar" : "Crear"
+              )}
             </Button>
           </div>
         </form>

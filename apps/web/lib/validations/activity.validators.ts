@@ -14,6 +14,8 @@ export const activityCreateSchema = z.object({
   objectiveIds: z.array(z.number()).min(1, "Debe seleccionar al menos un objetivo"),
   projectId: z.number().min(1, "El ID del proyecto es obligatorio"),
   createdBy: z.string().optional(),
+  realStartDate: z.string().optional().nullable(),
+  realEndDate: z.string().optional().nullable(),
 }).refine((data) => {
   const start = new Date(data.startDate);
   const end = new Date(data.endDate);
@@ -37,6 +39,8 @@ export const activityUpdateSchema = z.object({
   reportedStatus: z.string().optional(),
   objectiveIds: z.array(z.number()).optional(),
   updatedBy: z.string().optional(),
+  realStartDate: z.string().optional().nullable(),
+  realEndDate: z.string().optional().nullable(),
 }).refine((data) => {
   if (data.startDate && data.endDate) {
     const start = new Date(data.startDate);

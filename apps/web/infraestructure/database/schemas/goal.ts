@@ -4,6 +4,7 @@ import { indicator } from "./indicator.ts";
 
 export const goal = t.pgTable("goal", {
   id: t.serial("id").primaryKey(),
+  period: t.text("period"), // e.g. "2024-Q1"
   year: t.integer("year").notNull(),
   targetValue: t.decimal("target_value", { precision: 10, scale: 2 }).notNull(),
   actualValue: t.decimal("actual_value", { precision: 10, scale: 2 }),

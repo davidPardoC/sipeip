@@ -1,5 +1,6 @@
 export interface Goal {
   id: number;
+  period?: string | null;
   year: number;
   targetValue: string;
   actualValue?: string | null;
@@ -14,6 +15,7 @@ export interface Goal {
 }
 
 export interface CreateGoalData {
+  period?: string;
   year: number;
   targetValue: string;
   actualValue?: string;

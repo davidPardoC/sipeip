@@ -1,6 +1,6 @@
 import * as t from "drizzle-orm/pg-core";
 import { institutionalPlan } from "./institutional-plan.ts";
-import { StatusEnum } from "./status-enum.ts";
+import { StatusEnum, ComplianceRuleEnum } from "./status-enum.ts";
 
 export const strategicObjective = t.pgTable("strategic_objective", {
   id: t.serial("id").primaryKey(),
@@ -11,6 +11,7 @@ export const strategicObjective = t.pgTable("strategic_objective", {
   startTime: t.timestamp("start_time", { mode: "string" }).notNull(),
   endTime: t.timestamp("end_time", { mode: "string" }).notNull(),
   //Audit fields
+  complianceRule: ComplianceRuleEnum("compliance_rule").default("AND").notNull(),
   createdBy: t.text("created_by"),
   createdAt: t.timestamp("created_at", { mode: "string" }).defaultNow(),
   updatedAt: t.timestamp("updated_at", { mode: "string" }).defaultNow(),
@@ -18,6 +19,5 @@ export const strategicObjective = t.pgTable("strategic_objective", {
   // Relations
   institutionalPlanId: t
     .integer("institutional_plan_id")
-    .notNull()
     .references(() => institutionalPlan.id, { onDelete: "cascade" }),
 });

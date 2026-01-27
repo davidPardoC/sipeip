@@ -13,14 +13,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Target, Edit, Link, BarChart3 } from "lucide-react";
-import { getStrategicObjectivesByInstitutionalPlan } from "../actions";
+import { getStrategicObjectivesByInstitutionalPlan, getStrategicObjectives } from "../actions";
 import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 import StrategicObjectiveForm from "./StrategicObjectiveForm";
 import DeleteStrategicObjectiveDialog from "./DeleteStrategicObjectiveDialog";
 import AlignmentModal from "./AlignmentModal";
 
 interface StrategicObjectivesTableProps {
-  institutionalPlanId: number;
+  institutionalPlanId?: number;
   institutionalPlanName?: string;
 }
 
@@ -37,7 +37,12 @@ const StrategicObjectivesTable = ({
   useEffect(() => {
     const fetchObjectives = async () => {
       try {
-        const objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        let objectives;
+        if (institutionalPlanId) {
+          objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        } else {
+          objectives = await getStrategicObjectives();
+        }
         setStrategicObjectives(objectives);
       } catch (error) {
         console.error("Error fetching strategic objectives:", error);
@@ -53,7 +58,12 @@ const StrategicObjectivesTable = ({
     // Refetch data when an objective is created/updated
     const fetchObjectives = async () => {
       try {
-        const objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        let objectives;
+        if (institutionalPlanId) {
+          objectives = await getStrategicObjectivesByInstitutionalPlan(institutionalPlanId);
+        } else {
+          objectives = await getStrategicObjectives();
+        }
         setStrategicObjectives(objectives);
       } catch (error) {
         console.error("Error refetching strategic objectives:", error);
@@ -126,8 +136,8 @@ const StrategicObjectivesTable = ({
               : "Gestiona los objetivos estratégicos"}
           </p>
         </div>
-        <StrategicObjectiveForm 
-          institutionalPlanId={institutionalPlanId} 
+        <StrategicObjectiveForm
+          institutionalPlanId={institutionalPlanId}
           onObjectiveCreated={handleObjectiveUpdated}
         />
       </div>
@@ -202,23 +212,23 @@ const StrategicObjectivesTable = ({
                   <TableCell>{formatDateTime(objective.createdAt)}</TableCell>
                   <TableCell>{formatDateTime(objective.updatedAt)}</TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleIndicatorsClick(objective.id)}
                     >
                       <BarChart3 className="w-4 h-4 mr-1" />
                       Indicadores
                     </Button>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleAlignmentClick(objective)}
                     >
                       <Link className="w-4 h-4 mr-1" />
                       Alineación
                     </Button>
-                    <StrategicObjectiveForm 
+                    <StrategicObjectiveForm
                       objective={objective}
                       institutionalPlanId={institutionalPlanId}
                       onObjectiveUpdated={handleObjectiveUpdated}
@@ -229,9 +239,9 @@ const StrategicObjectivesTable = ({
                         </Button>
                       }
                     />
-                    <DeleteStrategicObjectiveDialog 
-                      objective={objective} 
-                      onObjectiveDeleted={handleObjectiveUpdated} 
+                    <DeleteStrategicObjectiveDialog
+                      objective={objective}
+                      onObjectiveDeleted={handleObjectiveUpdated}
                     />
                   </TableCell>
                 </TableRow>
