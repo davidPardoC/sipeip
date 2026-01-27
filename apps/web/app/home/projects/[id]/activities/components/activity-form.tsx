@@ -54,6 +54,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
     executedBudget: "0.00",
     status: "PLANNED",
   });
+  const [error, setError] = React.useState<string>("");
 
   React.useEffect(() => {
     if (activity) {
@@ -79,10 +80,15 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
         status: "PLANNED",
       });
     }
+    setError("");
   }, [activity]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (new Date(formData.endDate) < new Date(formData.startDate)) {
+      setError("La fecha de fin no puede ser anterior a la fecha de inicio");
+      return;
+    }
     onSave({
       ...formData,
       projectId,
@@ -95,28 +101,22 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
       ...prev,
       [field]: value,
     }));
+    if (error) setError("");
   };
 
-  const formatStatusName = (status: string) => {
-    return status
-      .toLowerCase()
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {activity ? "Edit Activity" : "Create New Activity"}
+            {activity ? "Editar Actividad" : "Crear Nueva Actividad"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name *</Label>
+              <Label htmlFor="name">Nombre *</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -125,7 +125,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="responsiblePerson">Responsible Person *</Label>
+              <Label htmlFor="responsiblePerson">Responsable *</Label>
               <Input
                 id="responsiblePerson"
                 value={formData.responsiblePerson}
@@ -136,7 +136,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Descripción</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -147,7 +147,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date *</Label>
+              <Label htmlFor="startDate">Fecha de Inicio *</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -157,7 +157,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="endDate">End Date *</Label>
+              <Label htmlFor="endDate">Fecha de Fin *</Label>
               <Input
                 id="endDate"
                 type="date"
@@ -166,11 +166,16 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
                 required
               />
             </div>
+            {error && (
+              <div className="col-span-2 text-sm text-red-500">
+                {error}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="progressPercent">Progress (%)</Label>
+              <Label htmlFor="progressPercent">Progreso (%)</Label>
               <Input
                 id="progressPercent"
                 type="number"
@@ -182,7 +187,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="executedBudget">Executed Budget</Label>
+              <Label htmlFor="executedBudget">Presupuesto Ejecutado</Label>
               <Input
                 id="executedBudget"
                 type="number"
@@ -193,17 +198,17 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Estado</Label>
               <Select value={formData.status} onValueChange={(value: ActivityStatus) => handleChange("status", value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PLANNED">{formatStatusName("PLANNED")}</SelectItem>
-                  <SelectItem value="IN_PROGRESS">{formatStatusName("IN_PROGRESS")}</SelectItem>
-                  <SelectItem value="COMPLETED">{formatStatusName("COMPLETED")}</SelectItem>
-                  <SelectItem value="CANCELLED">{formatStatusName("CANCELLED")}</SelectItem>
-                  <SelectItem value="ON_HOLD">{formatStatusName("ON_HOLD")}</SelectItem>
+                  <SelectItem value="PLANNED">Planeado</SelectItem>
+                  <SelectItem value="IN_PROGRESS">En Progreso</SelectItem>
+                  <SelectItem value="COMPLETED">Completado</SelectItem>
+                  <SelectItem value="CANCELLED">Cancelado</SelectItem>
+                  <SelectItem value="ON_HOLD">En Espera</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -211,10 +216,10 @@ const ActivityForm: React.FC<ActivityFormProps> = ({
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit">
-              {activity ? "Update" : "Create"}
+              {activity ? "Actualizar" : "Crear"}
             </Button>
           </div>
         </form>

@@ -33,7 +33,7 @@ export class InstitutionalPlanService extends BaseService {
       message: `Institutional plan ${newPlan[0].name} created successfully.`,
     });
 
-    return newPlan;
+    return newPlan as any;
   }
 
   getAll(): Promise<InstitutionalPlanWithEntity[]> {
@@ -74,7 +74,7 @@ export class InstitutionalPlanService extends BaseService {
       message: `Institutional plan ${updatedPlan[0].name} updated successfully.`,
     });
 
-    return updatedPlan;
+    return updatedPlan as any;
   }
 
   async delete(id: number) {
