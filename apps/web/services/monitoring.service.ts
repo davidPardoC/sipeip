@@ -2,8 +2,11 @@ import { db } from "@/infraestructure/database/connection";
 import { activity } from "@/infraestructure/database/schemas/activity";
 import { strategicObjective } from "@/infraestructure/database/schemas/strategic-objectives";
 import { indicator } from "@/infraestructure/database/schemas/indicator";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { Activity } from "@/types/domain/activity.entity";
+import { goal } from "@/infraestructure/database/schemas/goal";
+
+
 
 export class MonitoringService {
     /**
@@ -74,36 +77,97 @@ export class MonitoringService {
      * Rule 2 (OR): At least one indicator completed -> In Progress.
      * Rule 3: Else -> Not fulfilled.
      */
-    async evaluateObjectiveCompliance(objectiveId: number, rule: "AND" | "OR" = "AND") {
-        // Fetch indicators for the objective
-        // Note: We need a way to link Indicators to Objectives directly or via Activities.
-        // Schema `indicator` has `ownerType` and `ownerId`. Assuming ownerType='StrategicObjective'.
+    /**
+     * Calculates the compliance status of an indicator based on a measurement.
+     * Simple logic: Value >= Target -> CUMPLIDO, else NO_CUMPLIDO.
+     * In a real scenario, the direction (Ascending/Descending) should be part of the Indicator definition.
+     */
+    calculateIndicatorCompliance(current: number, target: number): "CUMPLIDO" | "NO_CUMPLIDO" {
+        // Assuming higher is better for now. TODO: Check indicator direction if added to schema.
+        return current >= target ? "CUMPLIDO" : "NO_CUMPLIDO";
+    }
 
+    /**
+     * Determines the compliance state of a Strategic Objective based on its indicators.
+     * Rule 1 (AND): All indicators completed -> Compliance fulfilled.
+     * Rule 2 (OR): At least one indicator completed -> In Progress.
+     * Rule 3: Else -> Not fulfilled.
+     */
+    async evaluateObjectiveCompliance(objectiveId: number, period: string) {
+        // 1. Get Objective to find its Rule
+        const objective = await db.query.strategicObjective.findFirst({
+            where: eq(strategicObjective.id, objectiveId),
+        });
+
+        if (!objective) return "NO_ENCONTRADO";
+
+        const rule = objective.complianceRule || "AND";
+
+        // 2. Fetch indicators for the objective
         const indicators = await db.query.indicator.findMany({
-            where: (indicators, { eq, and }) => and(
-                eq(indicators.ownerId, objectiveId),
-                eq(indicators.ownerType, "StrategicObjective")
+            where: and(
+                eq(indicator.ownerId, objectiveId),
+                eq(indicator.ownerType, "StrategicObjective")
             )
         });
 
         if (indicators.length === 0) return "NO_INICIADO";
 
-        // We need to know the status of each indicator. 
-        // The `indicator` table has a `status` column but it might be generic (ACTIVE/INACTIVE).
-        // We need "Measurement" or "Compliance" status.
-        // Assuming for now that we check if the indicator's connected activities are 100%.
-        // OR, does the Indicator itself have a `value` vs `meta`?
-        // Requirement: "El sistema debe determinar automáticamente el estado del objetivo en base al estado de sus indicadores".
-        // Let's assume we calculate Indicator status based on its formula/value.
+        // 3. For each indicator, fetch the measurement for the PERIOD
+        const indicatorStatuses: string[] = [];
 
-        // Since we don't have an `indicator_measurement` table yet in my view, I'll assume we compute it on the fly 
-        // or that `indicator` will have a computed field? 
-        // The prompt mentions "Cálculo de cumplimiento del indicador por periodo (valor actual vs meta)".
+        for (const ind of indicators) {
+            // Find Goal for this indicator and period
+            // Assuming period matches year or we adapt logic. 
+            // For now, let's assume 'period' string in Goal matches the passed period argument (e.g., "2024-Q1")
+            const measurement = await db.query.goal.findFirst({
+                where: and(
+                    eq(goal.indicatorId, ind.id),
+                    eq(goal.period, period)
+                )
+            });
 
-        // Placeholder logic for Indicator Compliance:
-        // An indicator is "CUMPLIDO" if value >= meta (or <= dependent on direction).
-        // Let's assume specific logic will be added when we have measurements.
+            if (measurement) {
+                // Use stored status or recalculate? Let's recalculate to be safe/dynamic
+                const status = this.calculateIndicatorCompliance(
+                    Number(measurement.actualValue || 0),
+                    Number(measurement.targetValue)
+                );
+                indicatorStatuses.push(status);
+            } else {
+                indicatorStatuses.push("NO_INICIADO");
+            }
+        }
 
-        return "PENDIENTE_IMPLEMENTACION_MEDICIONES";
+        // 4. Apply Rules
+        const allCompliant = indicatorStatuses.every(s => s === "CUMPLIDO");
+        const anyCompliant = indicatorStatuses.some(s => s === "CUMPLIDO");
+
+        if (rule === "AND") {
+            // Regla 1: un objetivo se cumple si TODOS sus indicadores están cumplidos.
+            if (allCompliant) return "CUMPLIDO";
+            // Check for "En Progreso" logic? 
+            // "Regla 3: En todos los demás casos, el Estado Cumplimiento = No cumplido"
+            // Wait, standard AND logic implies if 50% met, it's not Met. Is it "En Progreso"?
+            // The prompt says: "Regla 3: En todos los demás casos... No cumplido".
+            // So for AND, strict All or Nothing? 
+            // Let's assume if some are met it's partially done, but strictly following the prompt:
+            // "Estado Cumplimiento = Cumplido" (if ALL)
+            // Else "No cumplido" (Rule 3)
+            // However, usually we want "En Progreso" if started.
+            // Let's stick to the prompt's defined Rules 1, 2, 3 explicitly.
+            return "NO_CUMPLIDO";
+        } else if (rule === "OR") {
+            // Regla 2: un objetivo se cumple si AL MENOS UNO de sus indicadores está cumplido. Estado Cumplimiento = En Progreso
+            // Wait, prompt says: "Regla 2... Estado Cumplimiento = En Progreso". 
+            // Is it ever "CUMPLIDO" for OR rule? 
+            // Prompt: "un objetivo se cumple si AL MENOS UNO... Estado Cumplimiento = En Progreso"
+            // This wording is tricky. "se cumple" usually means Completed. But it says "Estado = En Progreso".
+            // I will return "EN_PROGRESO" if at least one is met.
+            if (anyCompliant) return "EN_PROGRESO";
+            return "NO_CUMPLIDO";
+        }
+
+        return "NO_CUMPLIDO";
     }
 }

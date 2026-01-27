@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, User, Calendar, DollarSign, TrendingUp } from "lucide-react";
+import { Edit, Trash2, User, Calendar, DollarSign, TrendingUp, Clock } from "lucide-react";
 import { Activity } from "@/types/domain/activity.entity";
 import { Session } from "next-auth";
 import RBACComponent from "@/components/rbac";
@@ -84,12 +84,12 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center space-x-2">
             <User className="h-4 w-4 text-gray-500" />
-            <span className="text-gray-600">Responsible:</span>
+            <span className="text-gray-600">Responsable:</span>
             <span className="font-medium">{activity.responsiblePerson}</span>
           </div>
           <div className="flex items-center space-x-2">
             <TrendingUp className="h-4 w-4 text-gray-500" />
-            <span className="text-gray-600">Progress:</span>
+            <span className="text-gray-600">Progreso:</span>
             <span className="font-medium">{progressPercent.toFixed(1)}%</span>
           </div>
         </div>
@@ -97,19 +97,60 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center space-x-2">
             <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-gray-600">Start:</span>
+            <span className="text-gray-600">Inicio Plan:</span>
             <span className="font-medium">{formatDate(activity.startDate)}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-gray-600">End:</span>
+            <span className="text-gray-600">Fin Plan:</span>
             <span className="font-medium">{formatDate(activity.endDate)}</span>
+          </div>
+          <div className="flex items-center space-x-2 col-span-2">
+            <Clock className="h-4 w-4 text-gray-500" />
+            <span className="text-gray-600">Duración Planificada:</span>
+            <span className="font-medium">{activity.plannedDuration || 0} días</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 text-sm">
+        <div className="grid grid-cols-2 gap-4 text-sm border-t pt-2 mt-2">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-green-600" />
+            <span className="text-gray-600">Inicio Real:</span>
+            <span className="font-medium">{activity.realStartDate ? formatDate(activity.realStartDate) : "-"}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-green-600" />
+            <span className="text-gray-600">Fin Real:</span>
+            <span className="font-medium">{activity.realEndDate ? formatDate(activity.realEndDate) : "-"}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 text-sm bg-gray-50 p-2 rounded-md">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500">Variación Tiempo</span>
+            <span className="font-medium text-gray-700">
+              {(() => {
+                if (!activity.realEndDate || !activity.endDate) return "-";
+                const real = new Date(activity.realEndDate).getTime();
+                const planned = new Date(activity.endDate).getTime();
+                const diff = Math.ceil((real - planned) / (1000 * 60 * 60 * 24));
+                return diff > 0 ? `+${diff} días` : `${diff} días`;
+              })()}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500">Cumplimiento</span>
+            <span className={`font-medium ${activity.reportedStatus === 'COMPLETADA' ? 'text-green-600' :
+              activity.reportedStatus === 'EN_RIESGO' ? 'text-red-600' : 'text-gray-700'
+              }`}>
+              {activity.reportedStatus || "NO_INICIADA"}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2 text-sm pt-2">
           <DollarSign className="h-4 w-4 text-gray-500" />
-          <span className="text-gray-600">Executed Budget:</span>
+          <span className="text-gray-600">Presupuesto Ejecutado:</span>
           <span className="font-medium">{formatCurrency(activity.executedBudget)}</span>
         </div>
 
@@ -128,8 +169,8 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         </div>
 
         <div className="flex justify-end space-x-2 pt-2">
-          <RBACComponent 
-            roles={[ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN]} 
+          <RBACComponent
+            roles={[ROLES.SYS_ADMIN, ROLES.PLANIFICATION_TECHNICIAN]}
             session={session}
           >
             <Button
@@ -139,7 +180,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
               className="flex items-center space-x-1"
             >
               <Edit className="h-4 w-4" />
-              <span>Edit</span>
+              <span>Editar</span>
             </Button>
             <Button
               variant="outline"
@@ -148,7 +189,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
               className="flex items-center space-x-1 text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
             >
               <Trash2 className="h-4 w-4" />
-              <span>Delete</span>
+              <span>Borrar</span>
             </Button>
           </RBACComponent>
         </div>

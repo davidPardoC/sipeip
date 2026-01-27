@@ -20,37 +20,88 @@ export class ActivityRepository {
       .returning();
   }
 
-  // Get all activities (not deleted)
-  async getAll(): Promise<Activity[]> {
-    const result = await db
-      .select()
-      .from(activity)
-      .where(isNull(activity.deletedAt))
-      .orderBy(desc(activity.updatedAt));
-
-    return result as Activity[];
-  }
-
-  // Get activity by ID
+  // Get activity by ID with Objectives
   async getById(id: number): Promise<Activity | undefined> {
     const result = await db
-      .select()
+      .select({
+        activity: activity,
+        objectiveId: activityStrategicObjective.strategicObjectiveId
+      })
       .from(activity)
-      .where(and(eq(activity.id, id), isNull(activity.deletedAt)))
-      .limit(1);
+      .leftJoin(activityStrategicObjective, eq(activity.id, activityStrategicObjective.activityId))
+      .where(and(eq(activity.id, id), isNull(activity.deletedAt)));
 
-    return result[0] as Activity | undefined;
+    if (result.length === 0) return undefined;
+
+    const activityData = result[0].activity;
+    const objectiveIds = result
+      .map(r => r.objectiveId)
+      .filter((id): id is number => id !== null);
+
+    return {
+      ...activityData,
+      objectiveIds
+    } as Activity;
   }
 
-  // Get activities by project ID
+  // Get activities by project ID with Objectives
   async getByProjectId(projectId: number): Promise<Activity[]> {
-    const result = await db
-      .select()
+    const rows = await db
+      .select({
+        activity: activity,
+        objectiveId: activityStrategicObjective.strategicObjectiveId
+      })
       .from(activity)
+      .leftJoin(activityStrategicObjective, eq(activity.id, activityStrategicObjective.activityId))
       .where(and(eq(activity.projectId, projectId), isNull(activity.deletedAt)))
       .orderBy(desc(activity.updatedAt));
 
-    return result as Activity[];
+    const activityMap = new Map<number, Activity>();
+
+    for (const row of rows) {
+      if (!activityMap.has(row.activity.id)) {
+        activityMap.set(row.activity.id, {
+          ...row.activity,
+          objectiveIds: []
+        } as Activity);
+      }
+
+      if (row.objectiveId !== null) {
+        activityMap.get(row.activity.id)!.objectiveIds!.push(row.objectiveId);
+      }
+    }
+
+    return Array.from(activityMap.values());
+  }
+
+  // Get all activities with Objectives
+  async getAll(): Promise<Activity[]> {
+    const rows = await db
+      .select({
+        activity: activity,
+        objectiveId: activityStrategicObjective.strategicObjectiveId
+      })
+      .from(activity)
+      .leftJoin(activityStrategicObjective, eq(activity.id, activityStrategicObjective.activityId))
+      .where(isNull(activity.deletedAt))
+      .orderBy(desc(activity.updatedAt));
+
+    const activityMap = new Map<number, Activity>();
+
+    for (const row of rows) {
+      if (!activityMap.has(row.activity.id)) {
+        activityMap.set(row.activity.id, {
+          ...row.activity,
+          objectiveIds: []
+        } as Activity);
+      }
+
+      if (row.objectiveId !== null) {
+        activityMap.get(row.activity.id)!.objectiveIds!.push(row.objectiveId);
+      }
+    }
+
+    return Array.from(activityMap.values());
   }
 
   // Update an activity

@@ -31,7 +31,7 @@ import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 
 interface StrategicObjectiveFormProps {
   objective?: StrategicObjective;
-  institutionalPlanId: number;
+  institutionalPlanId?: number;
   onObjectiveCreated?: () => void;
   onObjectiveUpdated?: () => void;
   trigger?: React.ReactNode;
@@ -56,7 +56,7 @@ const StrategicObjectiveForm = ({
       status: objective?.status || "ACTIVE",
       startTime: objective?.startTime || "",
       endTime: objective?.endTime || "",
-      institutionalPlanId: institutionalPlanId,
+      institutionalPlanId: (institutionalPlanId ?? objective?.institutionalPlanId) || undefined,
     },
   });
 
@@ -78,7 +78,7 @@ const StrategicObjectiveForm = ({
         );
         setOpen(false);
         form.reset();
-        
+
         // Call appropriate callback
         if (objective && onObjectiveUpdated) {
           onObjectiveUpdated();

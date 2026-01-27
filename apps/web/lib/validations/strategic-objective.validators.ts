@@ -7,7 +7,7 @@ export const strategicObjectiveCreateSchema = z.object({
   status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED"]).optional(),
   startTime: z.string().min(1, "La fecha de inicio es requerida"),
   endTime: z.string().min(1, "La fecha de fin es requerida"),
-  institutionalPlanId: z.number().min(1, "El plan institucional es requerido"),
+  institutionalPlanId: z.number().min(1, "El plan institucional es requerido").optional(),
   createdBy: z.string().optional(),
 }).refine(
   (data) => {
