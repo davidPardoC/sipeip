@@ -1,5 +1,6 @@
 import { db } from "@/infraestructure/database/connection";
 import { activity } from "@/infraestructure/database/schemas/activity";
+import { activityStrategicObjective } from "@/infraestructure/database/schemas/activity-strategic-objective";
 import { Activity, ActivityCreate, ActivityUpdate } from "@/types/domain/activity.entity";
 import { and, desc, eq, isNull } from "drizzle-orm";
 
@@ -80,5 +81,33 @@ export class ActivityRepository {
       .from(activity)
       .where(and(eq(activity.status, status), isNull(activity.deletedAt)))
       .orderBy(desc(activity.updatedAt));
+  }
+
+  // Get last code for project
+  async getLastCode(projectId: number): Promise<string | null> {
+    const result = await db
+      .select({ code: activity.code })
+      .from(activity)
+      .where(and(eq(activity.projectId, projectId)))
+      .orderBy(desc(activity.code))
+      .limit(1);
+
+    return result[0]?.code || null;
+  }
+  // Save objectives for activity (M:N)
+  async saveObjectives(activityId: number, objectiveIds: number[]) {
+    // First delete existing
+    await db.delete(activityStrategicObjective)
+      .where(eq(activityStrategicObjective.activityId, activityId));
+
+    // Insert new
+    if (objectiveIds.length > 0) {
+      await db.insert(activityStrategicObjective).values(
+        objectiveIds.map(objId => ({
+          activityId,
+          strategicObjectiveId: objId
+        }))
+      );
+    }
   }
 }
