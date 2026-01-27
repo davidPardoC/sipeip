@@ -14,6 +14,8 @@ export class StrategicObjectiveRepository {
         status: data.status || "ACTIVE",
         startTime: data.startTime!,
         endTime: data.endTime!,
+        fulfillmentRule: data.fulfillmentRule || "AND",
+        fulfillmentStatus: data.fulfillmentStatus || "NO_CUMPLIDO",
         institutionalPlanId: data.institutionalPlanId!,
         createdBy: data.createdBy,
         createdAt: new Date().toISOString(),
@@ -32,6 +34,8 @@ export class StrategicObjectiveRepository {
         status: strategicObjective.status,
         startTime: strategicObjective.startTime,
         endTime: strategicObjective.endTime,
+        fulfillmentRule: strategicObjective.fulfillmentRule,
+        fulfillmentStatus: strategicObjective.fulfillmentStatus,
         institutionalPlanId: strategicObjective.institutionalPlanId,
         createdBy: strategicObjective.createdBy,
         createdAt: strategicObjective.createdAt,
@@ -52,12 +56,17 @@ export class StrategicObjectiveRepository {
         },
       })
       .from(strategicObjective)
-      .leftJoin(institutionalPlan, eq(strategicObjective.institutionalPlanId, institutionalPlan.id))
+      .leftJoin(
+        institutionalPlan,
+        eq(strategicObjective.institutionalPlanId, institutionalPlan.id)
+      )
       .where(isNull(strategicObjective.deletedAt));
 
-    return result.map(item => ({
+    return result.map((item) => ({
       ...item,
-      institutionalPlan: item.institutionalPlan?.id ? item.institutionalPlan : undefined,
+      institutionalPlan: item.institutionalPlan?.id
+        ? item.institutionalPlan
+        : undefined,
     })) as StrategicObjectiveWithPlan[];
   }
 
@@ -83,6 +92,8 @@ export class StrategicObjectiveRepository {
         status: strategicObjective.status,
         startTime: strategicObjective.startTime,
         endTime: strategicObjective.endTime,
+        fulfillmentRule: strategicObjective.fulfillmentRule,
+        fulfillmentStatus: strategicObjective.fulfillmentStatus,
         institutionalPlanId: strategicObjective.institutionalPlanId,
         createdBy: strategicObjective.createdBy,
         createdAt: strategicObjective.createdAt,
@@ -103,21 +114,23 @@ export class StrategicObjectiveRepository {
         },
       })
       .from(strategicObjective)
-      .leftJoin(institutionalPlan, eq(strategicObjective.institutionalPlanId, institutionalPlan.id))
+      .leftJoin(
+        institutionalPlan,
+        eq(strategicObjective.institutionalPlanId, institutionalPlan.id)
+      )
       .where(
-        and(
-          eq(strategicObjective.id, id),
-          isNull(strategicObjective.deletedAt)
-        )
+        and(eq(strategicObjective.id, id), isNull(strategicObjective.deletedAt))
       )
       .limit(1);
 
     if (result.length === 0) return undefined;
-    
+
     const item = result[0];
     return {
       ...item,
-      institutionalPlan: item.institutionalPlan?.id ? item.institutionalPlan : undefined,
+      institutionalPlan: item.institutionalPlan?.id
+        ? item.institutionalPlan
+        : undefined,
     } as StrategicObjectiveWithPlan;
   }
 

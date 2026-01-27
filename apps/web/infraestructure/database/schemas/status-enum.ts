@@ -40,3 +40,20 @@ export const ActivityStatusEnum = t.pgEnum("activity_status", [
   "CANCELLED",
   "ON_HOLD",
 ]);
+
+export const ActivityReportedStatusEnum = t.pgEnum("activity_reported_status", [
+  "NO_INICIADA",
+  "EN_RIESGO",
+  "COMPLETADA",
+]);
+
+export const FulfillmentRuleEnum = t.pgEnum("fulfillment_rule", [
+  "AND",
+  "OR",
+]);
+
+export const FulfillmentStatusEnum = t.pgEnum("fulfillment_status", [
+  "CUMPLIDO",
+  "EN_PROGRESO",
+  "NO_CUMPLIDO",
+]);

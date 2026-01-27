@@ -18,6 +18,8 @@ import {
   strategicObjective,
   typology,
   attachment,
+  activity,
+  activityObjective,
 } from "./schemas/index.ts";
 import { usersMapping } from "./schemas/users_mapping.ts";
 
@@ -46,6 +48,8 @@ const db = drizzle({
     strategicObjective,
     typology,
     attachment,
+    activity,
+    activityObjective,
     usersMapping
   },
 });

@@ -39,6 +39,7 @@ export const LOG_EVENTS = {
     CREATE: "strategic_objective_create",
     UPDATE: "strategic_objective_update",
     DELETE: "strategic_objective_delete",
+    FULFILLMENT_CALCULATED: "strategic_objective_fulfillment_calculated",
   },
   PROGRAMS: {
     CREATE: "program_create",
@@ -79,5 +80,7 @@ export const LOG_EVENTS = {
     CREATE: "activity_create",
     UPDATE: "activity_update",
     DELETE: "activity_delete",
+    LINK_OBJECTIVES: "activity_link_objectives",
+    UPDATE_OBJECTIVES: "activity_update_objectives",
   },
 };

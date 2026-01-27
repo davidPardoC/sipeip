@@ -1,6 +1,6 @@
 import * as t from "drizzle-orm/pg-core";
 import { institutionalPlan } from "./institutional-plan.ts";
-import { StatusEnum } from "./status-enum.ts";
+import { StatusEnum, FulfillmentRuleEnum, FulfillmentStatusEnum } from "./status-enum.ts";
 
 export const strategicObjective = t.pgTable("strategic_objective", {
   id: t.serial("id").primaryKey(),
@@ -10,6 +10,8 @@ export const strategicObjective = t.pgTable("strategic_objective", {
   status: StatusEnum(),
   startTime: t.timestamp("start_time", { mode: "string" }).notNull(),
   endTime: t.timestamp("end_time", { mode: "string" }).notNull(),
+  fulfillmentRule: FulfillmentRuleEnum("fulfillment_rule").default("AND"),
+  fulfillmentStatus: FulfillmentStatusEnum("fulfillment_status").default("NO_CUMPLIDO"),
   //Audit fields
   createdBy: t.text("created_by"),
   createdAt: t.timestamp("created_at", { mode: "string" }).defaultNow(),

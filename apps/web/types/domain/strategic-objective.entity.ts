@@ -2,6 +2,10 @@ import { InstitutionalPlan } from "./institutional-plan.entity";
 
 export type StatusType = "ACTIVE" | "INACTIVE" | "ARCHIVED";
 
+export type FulfillmentRule = "AND" | "OR";
+
+export type FulfillmentStatus = "CUMPLIDO" | "EN_PROGRESO" | "NO_CUMPLIDO";
+
 export class StrategicObjective {
   id: number;
   code: string;
@@ -10,6 +14,8 @@ export class StrategicObjective {
   status: StatusType | null;
   startTime: string;
   endTime: string;
+  fulfillmentRule?: FulfillmentRule | null;
+  fulfillmentStatus?: FulfillmentStatus | null;
   institutionalPlanId: number;
   createdBy: string | null;
   createdAt: string | null;
@@ -24,6 +30,8 @@ export class StrategicObjective {
     status: StatusType | null,
     startTime: string,
     endTime: string,
+    fulfillmentRule: FulfillmentRule | null,
+    fulfillmentStatus: FulfillmentStatus | null,
     institutionalPlanId: number,
     createdBy: string | null,
     createdAt: string | null,
@@ -37,6 +45,8 @@ export class StrategicObjective {
     this.status = status;
     this.startTime = startTime;
     this.endTime = endTime;
+    this.fulfillmentRule = fulfillmentRule;
+    this.fulfillmentStatus = fulfillmentStatus;
     this.institutionalPlanId = institutionalPlanId;
     this.createdBy = createdBy;
     this.createdAt = createdAt;
@@ -47,4 +57,6 @@ export class StrategicObjective {
 
 export interface StrategicObjectiveWithPlan extends StrategicObjective {
   institutionalPlan?: InstitutionalPlan;
+  fulfillmentRule?: FulfillmentRule | null;
+  fulfillmentStatus?: FulfillmentStatus | null;
 }

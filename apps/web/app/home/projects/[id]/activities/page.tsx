@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search, ArrowLeft } from "lucide-react";
 import { Activity } from "@/types/domain/activity.entity";
 import { Project } from "@/types/domain/project.entity";
+import { StrategicObjective } from "@/types/domain/strategic-objective.entity";
 import ActivityCard from "./components/activity-card";
+
 import ActivityForm from "./components/activity-form";
 import { useRouter } from "next/navigation";
 import RBACComponent from "@/components/rbac";
@@ -21,7 +23,9 @@ const ProjectActivitiesPage = () => {
   const projectId = parseInt(params.id as string);
 
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [strategicObjectives, setStrategicObjectives] = useState<StrategicObjective[]>([]);
   const [project, setProject] = useState<Project | null>(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -45,6 +49,21 @@ const ProjectActivitiesPage = () => {
   };
 
   useEffect(() => {
+    // Fetch strategic objectives
+    const fetchStrategicObjectives = async () => {
+      try {
+        const response = await fetch("/api/strategic-objectives");
+        if (response.ok) {
+          const data = await response.json();
+          setStrategicObjectives(data);
+        }
+      } catch (error) {
+        console.error("Error fetching strategic objectives:", error);
+      }
+    };
+
+    fetchStrategicObjectives();
+
     if (projectId) {
       const fetchData = async () => {
         try {
@@ -85,7 +104,7 @@ const ProjectActivitiesPage = () => {
   const handleSave = async (activityData: Partial<Activity>) => {
     try {
       let response;
-      
+
       if (editingActivity) {
         // Update existing activity
         response = await fetch(`/api/activities/${editingActivity.id}`, {
@@ -114,11 +133,11 @@ const ProjectActivitiesPage = () => {
         setIsDialogOpen(false);
         setEditingActivity(null);
         setSuccessMessage(
-          editingActivity 
-            ? "Activity updated successfully!" 
+          editingActivity
+            ? "Activity updated successfully!"
             : "Activity created successfully!"
         );
-        
+
         // Clear success message after 3 seconds
         setTimeout(() => {
           setSuccessMessage(null);
@@ -140,7 +159,7 @@ const ProjectActivitiesPage = () => {
         if (response.ok) {
           await fetchActivities();
           setSuccessMessage("Activity deleted successfully!");
-          
+
           // Clear success message after 3 seconds
           setTimeout(() => {
             setSuccessMessage(null);
@@ -305,6 +324,7 @@ const ProjectActivitiesPage = () => {
         onSave={handleSave}
         activity={editingActivity}
         projectId={projectId}
+        strategicObjectives={strategicObjectives}
       />
     </div>
   );

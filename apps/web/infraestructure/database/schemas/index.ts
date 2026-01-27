@@ -2,7 +2,13 @@ export { macroSector } from "./macro-sector.ts";
 export { sector } from "./sector.ts";
 export { microSector } from "./micro-sector.ts";
 export { indicator } from "./indicator.ts";
-export { StatusEnum } from "./status-enum.ts";
+export {
+  StatusEnum,
+  ActivityStatusEnum,
+  ActivityReportedStatusEnum,
+  FulfillmentRuleEnum,
+  FulfillmentStatusEnum
+} from "./status-enum.ts";
 export { institutionalPlan } from "./institutional-plan.ts";
 export { objectiveAlignment } from "./objective-alignment.ts";
 export { odsGoal } from "./ods-goal.ts";
@@ -16,3 +22,4 @@ export { typology } from "./typology.ts";
 export { goal } from "./goal.ts";
 export { attachment } from "./attachments.ts";
 export { activity } from "./activity.ts";
+export { activityObjective } from "./activity-objective.ts";
