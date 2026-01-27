@@ -170,4 +170,50 @@ export class MonitoringService {
 
         return "NO_CUMPLIDO";
     }
+    async getComplianceReport(period: string) {
+        const objectives = await db.query.strategicObjective.findMany(); // TODO: Filter by plan if needed
+
+        const report = await Promise.all(objectives.map(async (obj) => {
+            const status = await this.evaluateObjectiveCompliance(obj.id, period);
+
+            // Get detailed indicators for this objective
+            const indicators = await db.query.indicator.findMany({
+                where: and(
+                    eq(indicator.ownerId, obj.id),
+                    eq(indicator.ownerType, "StrategicObjective")
+                )
+            });
+
+            const indicatorDetails = await Promise.all(indicators.map(async (ind) => {
+                const measurement = await db.query.goal.findFirst({
+                    where: and(
+                        eq(goal.indicatorId, ind.id),
+                        eq(goal.period, period)
+                    )
+                });
+
+                const current = Number(measurement?.actualValue || 0);
+                const target = Number(measurement?.targetValue || 0);
+                const indStatus = measurement ? this.calculateIndicatorCompliance(current, target) : "NO_INICIADO";
+
+                return {
+                    id: ind.id,
+                    name: ind.name,
+                    target,
+                    current,
+                    status: indStatus
+                };
+            }));
+
+            return {
+                id: obj.id,
+                name: obj.name,
+                rule: obj.complianceRule || "AND",
+                status,
+                indicators: indicatorDetails
+            };
+        }));
+
+        return report;
+    }
 }

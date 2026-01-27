@@ -26,36 +26,26 @@ const ComplianceReportPage = () => {
     const [objectives, setObjectives] = useState<ObjectiveReport[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // In a real implementation, this would fetch from an API endpoint
-        // that uses MonitoringService.
-        // For now we simulate or we need to create an API route.
-        // Let's assume we create an API route /api/reports/compliance
+    const [period, setPeriod] = useState("2024-Q1");
 
-        // Fallback Mock Data for UI Dev
-        setObjectives([
-            {
-                id: 1,
-                name: "Mock Objective AND",
-                rule: "AND",
-                status: "NO_CUMPLIDO",
-                indicators: [
-                    { id: 1, name: "Ind 1", target: 100, current: 100, status: "CUMPLIDO" },
-                    { id: 2, name: "Ind 2", target: 100, current: 50, status: "NO_CUMPLIDO" }
-                ]
-            },
-            {
-                id: 2,
-                name: "Mock Objective OR",
-                rule: "OR",
-                status: "EN_PROGRESO",
-                indicators: [
-                    { id: 3, name: "Ind 1", target: 80, current: 90, status: "CUMPLIDO" }
-                ]
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`/api/reports/compliance?period=${period}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setObjectives(data);
+                }
+            } catch (error) {
+                console.error("Error fetching report:", error);
+            } finally {
+                setLoading(false);
             }
-        ]);
-        setLoading(false);
-    }, []);
+        };
+
+        fetchData();
+    }, [period]);
 
     const getStatusColor = (status: ObjectiveStatus) => {
         switch (status) {
