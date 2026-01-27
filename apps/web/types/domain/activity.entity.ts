@@ -8,6 +8,14 @@ export interface Activity {
   progressPercent: string;
   executedBudget: string;
   status: ActivityStatus;
+  isActive: boolean;
+  priority: number;
+  plannedDuration?: number;
+  realStartDate?: string;
+  realEndDate?: string;
+  code: string;
+  reportedStatus?: string;
+  objectiveIds?: number[];
   projectId: number;
   createdBy?: string | null;
   updatedBy?: string | null;
@@ -24,9 +32,14 @@ export interface ActivityCreate {
   responsiblePerson: string;
   startDate: string;
   endDate: string;
+  priority?: number;
+  plannedDuration?: number;
   progressPercent?: string;
   executedBudget?: string;
   status?: ActivityStatus;
+  isActive?: boolean;
+  code?: string; // Optional if auto-generated
+  objectiveIds?: number[];
   projectId: number;
   createdBy?: string;
 }
@@ -37,9 +50,16 @@ export interface ActivityUpdate {
   responsiblePerson?: string;
   startDate?: string;
   endDate?: string;
+  priority?: number;
+  plannedDuration?: number;
+  realStartDate?: string;
+  realEndDate?: string;
   progressPercent?: string;
   executedBudget?: string;
   status?: ActivityStatus;
+  isActive?: boolean;
+  reportedStatus?: string;
+  objectiveIds?: number[];
   updatedBy?: string;
   updatedAt?: string;
 }

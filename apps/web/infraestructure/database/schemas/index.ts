@@ -16,3 +16,5 @@ export { typology } from "./typology.ts";
 export { goal } from "./goal.ts";
 export { attachment } from "./attachments.ts";
 export { activity } from "./activity.ts";
+export { activityStrategicObjective } from "./activity-strategic-objective.ts";
+export { activityIndicator } from "./activity-indicator.ts";
